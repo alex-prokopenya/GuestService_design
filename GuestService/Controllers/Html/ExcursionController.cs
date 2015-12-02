@@ -173,6 +173,7 @@
             ExcursionIndexContext model = new ExcursionIndexContext();
             PartnerSessionManager.CheckPartnerSession(this, param);
             model.PartnerSessionId = param.PartnerSessionID;
+
             if (model.PartnerSessionId == null)
             {
                 model.PartnerAlias = (param.PartnerAlias != null) ? param.PartnerAlias : Settings.ExcursionDefaultPartnerAlias;

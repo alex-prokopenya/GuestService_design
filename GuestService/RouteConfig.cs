@@ -39,27 +39,11 @@
             };
 
             routes.MapRoute(name, url, defaults);
-            name = "language";
-            url = "{language}/{controller}/{action}/{id}";
-            defaults = new {
-                   controller = "excursion",
-                   action = "index",
-                   id = UrlParameter.Optional
-            };
 
-            object constraints = new {
-                   language = @"\w\w(\-\w\w)?"
+            object constraints = new
+            {
+                language = @"\w\w(\-\w\w)?"
             };
-            routes.MapRoute(name, url, defaults, constraints);
-            name = "default";
-            url = "{controller}/{action}/{id}";
-            defaults = new {
-                controller = "excursion",
-                action = "index",
-                id = UrlParameter.Optional
-            };
-            routes.MapRoute(name, url, defaults);
-
             name = "excursions";
             url = "{language}/excursion/{region}";
             defaults = new
@@ -67,6 +51,24 @@
                 controller = "excursion",
                 action = "index",
                 region = UrlParameter.Optional
+            };
+            routes.MapRoute(name, url, defaults, constraints);
+            
+            name = "language";
+            url = "{language}/{controller}/{action}/{id}";
+            defaults = new {
+                   controller = "excursion",
+                   action = "index",
+                   id = UrlParameter.Optional
+            };
+            routes.MapRoute(name, url, defaults, constraints);
+
+            name = "default";
+            url = "{controller}/{action}/{id}";
+            defaults = new {
+                controller = "excursion",
+                action = "index",
+                id = UrlParameter.Optional
             };
             routes.MapRoute(name, url, defaults);
         }
