@@ -806,6 +806,13 @@ namespace GuestService.Data
                 {
                     DateTime orderTimeLimit = GetOrderTimeLimit(order.excursion.id, order.datefrom, order.excursion.language);
 
+                    if ((order.excursion.grouptype.id == 2) && 
+                        (DateTime.Now.AddHours(24) > order.datefrom) &&
+                        (DateTime.Now.AddHours(2) < order.datefrom))
+                    {
+                        orderTimeLimit = DateTime.Now.AddHours(2);
+                    }
+
                     if (timelimit > orderTimeLimit)
                         timelimit = orderTimeLimit;
                 }
