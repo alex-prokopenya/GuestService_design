@@ -34,6 +34,13 @@
         [XmlElement("FreeSeats")]
         public int? freeseats { get; set; }
 
+        [XmlElement("TotalSeats")]
+        public int? totalseats
+        {
+            get;
+            set;
+        }
+
         [XmlElement("Group")]
         public ExcursionGroup group { get; set; }
 

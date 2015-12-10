@@ -194,6 +194,13 @@ namespace GuestService.Data
                     isstopsale = !row.IsNull("excurs$stopsale") && row.ReadInt("excurs$stopsale") > 0,
                     freeseats = (row.ReadNullableInt("seats$free") > 0) ? row.ReadNullableInt("seats$free") : null
                 };
+
+                try
+                {
+                    result.totalseats = (row.ReadNullableInt("seats$total") >= 0) ? row.ReadNullableInt("seats$total") : null;
+                }
+                catch (Exception)
+                { }
                 XElement departureXml = row.ReadXml("excurs$departurepoints");
                 if (departureXml != null)
                 {

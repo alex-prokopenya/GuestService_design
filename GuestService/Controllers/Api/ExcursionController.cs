@@ -327,7 +327,9 @@
                 param.ld = new DateTime?(param.FirstDate.Value.AddDays((double) Settings.ExcursionCheckAvailabilityDays));
             }
             ExcursionExtendedDescriptionList list = new ExcursionExtendedDescriptionList();
+
             List<ExcursionDescription> list2 = ExcursionProvider.GetDescription(param.Language, param.Excursions);
+
             foreach (ExcursionDescription description in list2)
             {
                 ExcursionExtendedDescription item = new ExcursionExtendedDescription(description);
@@ -338,6 +340,23 @@
                     item.ranking = CatalogDescriptionExcursionRanking.Create(SurveyProvider.GetExcursionRanking(description.excursion.id, param.Language), param.Language);
                     item.surveynotes = ExcursionSurveyNote.Create(SurveyProvider.GetExcursionNotes(description.excursion.id));
                 }
+
+                int maxCheckCount = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["max_dates_check_places"]);
+
+                foreach (ExcursionDate ed in item.excursiondates)
+                {
+                    if (ed.isprice)
+                    {
+                        if (--maxCheckCount < 0) break;
+
+                        var price = ExcursionProvider.GetPrice(param.Language, partner.id, description.excursion.id, ed.date, null);
+
+                        if ((price.Count > 0) && (price[0].totalseats >= 0) && (!price[0].freeseats.HasValue))
+                            ed.isstopsale = true;
+                    }
+                }
+
+
                 list.Add(item);
             }
             return list;
@@ -467,9 +486,10 @@
                 System.Collections.Generic.List<ExcursionPrice> prices = ExcursionProvider.GetPrice(param.Language, partner.id, id, param.Date.Value, param.StartPoint);
                 result = new ExcursionPriceList((
                     from m in prices
-                    where !m.issaleclosed && !m.isstopsale && m.price != null
+                    where !m.issaleclosed && !m.isstopsale && m.price != null && !(m.totalseats >= 0 && !m.freeseats.HasValue)
                     select m).ToList<ExcursionPrice>());
             }
+
             return result;
         }
 
