@@ -545,13 +545,27 @@ namespace GuestService.Data
 
                 XElement departuresEl;
                 List<int> allowedIds = new List<int>();
+
+                //по полученому региону начала экскурсии получаем список айдишников экскурсий
                 if (departures != null)
                 {
-                    //делаем фильтр экскурсий по id региона
-                    DataSet set = DatabaseOperationProvider.Query("select inc from excurs where region = " + departures[0], "regions", new { });
+                    try
+                    {
+                        var query = "select inc from excurs where region = " + departures[0] +
+                             " union select excurs as inc from exdetplan where region = " + departures[0] +
+                             " union select excurs as inc from exprice   where region = " + departures[0] + " or region < 0";
 
-                    foreach (DataRow row in set.Tables["regions"].Rows)
-                        allowedIds.Add(row.ReadInt("inc"));
+                        //делаем фильтр экскурсий по id региона
+                        DataSet set = DatabaseOperationProvider.Query(query, "regions", new { });
+
+                        foreach (DataRow row in set.Tables["regions"].Rows)
+                            allowedIds.Add(row.ReadInt("inc"));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    
                 }
 
                 departuresEl = null;
