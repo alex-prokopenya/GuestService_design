@@ -172,6 +172,7 @@ namespace GuestService.Data
                 ExcursionPrice result = new ExcursionPrice
                 {
                     id = row.ReadInt("excurs$inc"),
+                    price_id = row.ReadNullableInt("price$id"),
                     date = date,
                     language = row.IsNull("lang$inc") ? null : new Language
                     {

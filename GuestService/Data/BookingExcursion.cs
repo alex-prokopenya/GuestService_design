@@ -15,7 +15,15 @@
 
         public int id { get; set; }
 
+        public int? price_id
+        {
+            get;
+            set;
+        }
+
         public int? language { get; set; }
+
+        public int? departure { get; set; }
 
         public string note { get; set; }
 

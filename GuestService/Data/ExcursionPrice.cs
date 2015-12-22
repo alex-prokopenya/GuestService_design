@@ -48,6 +48,12 @@
         public int id { get; set; }
 
         [XmlAttribute]
+        public int? price_id
+        {
+            get;
+            set;
+        }
+        [XmlAttribute]
         public bool issaleclosed { get; set; }
 
         [XmlAttribute]

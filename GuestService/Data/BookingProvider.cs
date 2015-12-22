@@ -545,6 +545,7 @@ namespace GuestService.Data
                                 new XAttribute("excursionid", order.excursion.id),
                                 (!order.excursion.extime.HasValue) ? null : new XElement("Time", new XAttribute("id", order.excursion.extime)),
                                 (!order.excursion.grouptype.HasValue) ? null : new XElement("GroupType", new XAttribute("id", order.excursion.grouptype)),
+                                (!order.excursion.price_id.HasValue) ? null : new XElement("Price", new XAttribute("id", order.excursion.price_id)),
                                 (!order.excursion.language.HasValue) ? null : new XElement("Language", new XAttribute("id", order.excursion.language)),
                                 (order.excursion.pickuppoint.HasValue || order.excursion.pickuphotel.HasValue) ? new XElement("From", new object[]
                                 {
@@ -691,81 +692,100 @@ namespace GuestService.Data
 
         private static ReservationState BuildBookingProcessResult(string language, string action, XElement xml, int? partnerPassId)
         {
-            DataSet ds = DatabaseOperationProvider.QueryProcedure("up_guest_BookingProcess", "state,orders,people,errors", new
-            {
-                action = action,
-                xml = xml,
-                lang = language,
-                partpass = partnerPassId
-            });
-            ReservationState result = (
-                from DataRow row in ds.Tables["state"].Rows
-                select BookingProvider.factory.ReservationState(row)).FirstOrDefault<ReservationState>();
-
-            var orderNote = "";
-
             try
             {
-                orderNote = System.Web.HttpContext.Current.Session["ordernote"].ToString();
-            }
-            catch (Exception ex) { }
-
-            if (result != null)
-            {
-                result.orders = (
-                    from DataRow row in ds.Tables["orders"].Rows
-                    orderby BookingProvider.factory.ReservationOrderSorting(row)
-                    select BookingProvider.factory.ReservationOrder(row, language, result.claimId, orderNote)).ToList<ReservationOrder>();
-                foreach (ReservationOrder order in result.orders)
+                DataSet ds = DatabaseOperationProvider.QueryProcedure("up_guest_BookingProcess", "state,orders,people,errors", new
                 {
-                    if (order.freight != null)
+                    action = action,
+                    xml = xml,
+                    lang = language,
+                    partpass = partnerPassId
+                });
+                ReservationState result = (
+                    from DataRow row in ds.Tables["state"].Rows
+                    select BookingProvider.factory.ReservationState(row)).FirstOrDefault<ReservationState>();
+
+                var orderNote = "";
+
+                try
+                {
+                    orderNote = System.Web.HttpContext.Current.Session["ordernote"].ToString();
+                }
+                catch (Exception ex) { }
+
+                if (result != null)
+                {
+                    result.orders = (
+                        from DataRow row in ds.Tables["orders"].Rows
+                        orderby BookingProvider.factory.ReservationOrderSorting(row)
+                        select BookingProvider.factory.ReservationOrder(row, language, result.claimId, orderNote)).ToList<ReservationOrder>();
+                    foreach (ReservationOrder order in result.orders)
                     {
-                        DataSet freightds = DatabaseOperationProvider.QueryProcedure("up_guest_getFreightInfo", "freight", new
+                        if (order.freight != null)
                         {
-                            freight = order.freight.id,
-                            date = order.datefrom,
-                            language = language
-                        });
-                        BookingProvider.factory.FillFreightInfo(order.freight, freightds.Tables["freight"].Rows.Cast<DataRow>().FirstOrDefault<DataRow>());
+                            DataSet freightds = DatabaseOperationProvider.QueryProcedure("up_guest_getFreightInfo", "freight", new
+                            {
+                                freight = order.freight.id,
+                                date = order.datefrom,
+                                language = language
+                            });
+                            BookingProvider.factory.FillFreightInfo(order.freight, freightds.Tables["freight"].Rows.Cast<DataRow>().FirstOrDefault<DataRow>());
+                        }
+                    }
+                    result.people = (
+                        from DataRow row in ds.Tables["people"].Rows
+                        select BookingProvider.factory.ReservationPeople(row)).ToList<ReservationPeople>();
+                    result.errors = (
+                        from DataRow row in ds.Tables["errors"].Rows
+                        select BookingProvider.factory.ReservationError(row)).ToList<ReservationError>();
+
+                    result.customer = GetCustomer(Convert.ToInt32(result.claimId));
+
+                    if ((action != "save") && (result.claimId != null))
+                    {
+                        result.agent = GetAgencyName(Convert.ToInt32(result.claimId)); //по id заказа из note забираем alias, по alias получаем login, и agent id
                     }
                 }
-                result.people = (
-                    from DataRow row in ds.Tables["people"].Rows
-                    select BookingProvider.factory.ReservationPeople(row)).ToList<ReservationPeople>();
-                result.errors = (
-                    from DataRow row in ds.Tables["errors"].Rows
-                    select BookingProvider.factory.ReservationError(row)).ToList<ReservationError>();
 
-                result.customer = GetCustomer(Convert.ToInt32(result.claimId));
-
-                if ((action != "save") && (result.claimId != null))
+                //привязываем путевку к аккаунту
+                if (action == "save")
                 {
-                    result.agent = GetAgencyName(Convert.ToInt32(result.claimId)); //по id заказа из note забираем alias, по alias получаем login, и agent id
-                }
-            }
+                    try
+                    {
+                        //делаем привязку путевки к партнеру
+                        AddClaimForUser(result.claimId.Value, language);
+                    }
+                    catch (Exception ex)
+                    {
 
-            //привязываем путевку к аккаунту
-            if (action == "save")
-            {
-                //делаем привязку путевки к партнеру
-                AddClaimForUser(result.claimId.Value, language);
+                    }
 
-                //считаем таймлимит
-                var timelimit = UpdateClaimTimelimit(result);
+                    try
+                    {
+                        //считаем таймлимит
+                        var timelimit = UpdateClaimTimelimit(result);
 
-                result.timelimit = timelimit;
+                        result.timelimit = timelimit;
+                    }
+                    catch (Exception ex)
+                    { }
 
-                //делаем отбивку
-                Task[] tasks = new Task[]
-                {
+                    //делаем отбивку
+                    Task[] tasks = new Task[]
+                    {
                       Task.Factory.StartNew(() => new SimpleEmailService().SendEmail<ReservationState>(result.customer.mail, "confirmation", language, result)),
                       Task.Factory.StartNew(() => new SmsSender().SendMessage<ReservationState>(result.customer.phone, "confirmation", language, result))
-                };
+                    };
 
-                Task.WaitAll(tasks);
+                    Task.WaitAll(tasks);
+                }
+
+                return result;
             }
-
-            return result;
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
+            return null;
         }
 
         private static DateTime GetClaimTimelimit(int? claimId)
@@ -859,7 +879,7 @@ namespace GuestService.Data
         {
             var dataset = DatabaseOperationProvider.Query("select user_id from guestservice_alias, claim where inc=@claimId and alias = note ", "users", new { claimId = claimId });
 
-            int userId = 1;
+            int userId = 39;
 
             if (dataset.Tables["users"].Rows.Count > 0)
                 userId = dataset.Tables["users"].Rows[0].ReadInt("user_id");
