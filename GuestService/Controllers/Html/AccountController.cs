@@ -15,6 +15,7 @@
     using System.Web.Security;
     using System.Xml.Linq;
     using WebMatrix.WebData;
+    using GuestService.Notifications;
 
     [UrlLanguage, HttpPreferences, WebSecurityInitializer, Authorize]
     public class AccountController : BaseController
@@ -335,8 +336,36 @@
             return base.View();
         }
 
-        private void SendRegistrationConfirmMail(ConfirmMailOperation action, string userName, string confirmationToken)
+        private void SendRegistrationConfirmMail(ConfirmMailOperation action, string userName, string confirmationToken, string role = "client")
         {
+            if (string.IsNullOrEmpty(userName))
+            {
+                throw new ArgumentNullException("userName");
+            }
+            if (string.IsNullOrEmpty(confirmationToken))
+            {
+                throw new ArgumentNullException("confirmationToken");
+            }
+
+            if (action == ConfirmMailOperation.confirm)
+            {
+                new SimpleEmailService().SendEmail<AccountConfirmationTemplate>(userName,
+                                                                "send_registration_confirm",
+                                                                "en",
+                                                                new AccountConfirmationTemplate()
+                                                                {
+                                                                    Role = role,
+                                                                    Token = confirmationToken,
+                                                                    ConfirmUrl = new Uri(base.Request.BaseServerAddress(), base.Url.Action("confirm", new { email = userName, token = confirmationToken })).ToString()
+                                                                });
+            }
+            else if (action == ConfirmMailOperation.recovery)
+            {
+                string content = new Uri(base.Request.BaseServerAddress(), base.Url.Action("resetpassword", new { token = confirmationToken })).ToString();
+                UserToolsProvider.UmgRaiseMessage(UrlLanguage.CurrentLanguage, "Guest Service Registration", userName, "GS_REGCONFIRM", new XElement("guestServiceRegistration", new object[] { new XAttribute("action", action.ToString()), new XElement("confirmUrl", content), new XElement("email", userName) }).ToString());
+            }
+
+            /*
             if (string.IsNullOrEmpty(userName))
             {
                 throw new ArgumentNullException("userName");
@@ -357,6 +386,7 @@
                     break;
             }
             UserToolsProvider.UmgRaiseMessage(UrlLanguage.CurrentLanguage, "Guest Service Registration", userName, "GS_REGCONFIRM", new XElement("guestServiceRegistration", new object[] { new XAttribute("action", action.ToString()), new XElement("confirmUrl", content), new XElement("email", userName) }).ToString());
+            */
         }
 
         private enum ConfirmMailOperation
