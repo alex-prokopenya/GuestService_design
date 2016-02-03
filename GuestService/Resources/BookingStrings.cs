@@ -42,6 +42,7 @@
 
             if (strings[str].ContainsKey(key))
                 return strings[str][key];
+            
 
             return BookingStrings.ResourceManager.GetString(key, BookingStrings.resourceCulture);
         }

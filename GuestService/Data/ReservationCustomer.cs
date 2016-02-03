@@ -13,6 +13,7 @@ namespace GuestService.Data
             get;
             set;
         }
+   
         public string address
         {
             get;

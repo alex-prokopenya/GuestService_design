@@ -169,7 +169,8 @@ namespace GuestService.Data
                     partner = row.IsNull("partnerid") ? null : new ReservationPartner
                     {
                         id = row.ReadInt("partnerid"),
-                        name = row.ReadNullableTrimmedString("partnername")
+                        name = row.ReadNullableTrimmedString("partnername"),
+                        phone = row.ReadNullableTrimmedString("partnerphone")
                     },
                     pax = new ReservationPax
                     {
@@ -258,6 +259,9 @@ namespace GuestService.Data
 
                             pickup = GetExcursionPickup(row.ReadInt("excursid"), language, claimId, orderNote)
                         };
+
+                        FillFoodEntryGuideCodeSpecCancel(ref result, language);
+
                     }
                     else
                     {
@@ -591,6 +595,7 @@ namespace GuestService.Data
             }
             return bookingXml;
         }
+
         public static ReservationState GetReservationState(string language, int claimId)
         {
             XElement xml = BookingProvider.BuildStatusClaimXml(claimId);
@@ -602,16 +607,106 @@ namespace GuestService.Data
             {
                 throw new System.ArgumentNullException("claim");
             }
+
             XElement xml = BookingProvider.BuildBookingClaimXml(partnerId, claim);
-            return BookingProvider.BuildBookingProcessResult(language, "calc", xml, null);
+
+            var res = BookingProvider.BuildBookingProcessResult(language, "calc", xml, null);
+
+            List<string> errorsId = new List<string>();
+
+            foreach (var error in res.errors)
+            {
+                errorsId.Add(error.orderid);
+            }
+
+            var placesList = new Dictionary<string, int>();
+
+
+            foreach (var order in claim.orders)
+            {
+                if (!errorsId.Contains(order.orderid))
+                {
+                    string key = order.excursion.id + "_" 
+                                + order.excursion.date.ToString("yyyy-MM-dd") +"_"
+                                + (order.excursion.extime ?? -1) + "_"
+                                + (order.excursion.departure ?? -1) + "_"
+                                + (order.excursion.language ?? -1);
+
+                    var places = 0;
+
+                    if (placesList.ContainsKey(key))
+                        places = placesList[key];
+                    else
+                    {
+                        places = GetFreePlacesForExcursion(order);
+                        placesList.Add(key, places);
+                    }
+
+                    if (places < order.excursion.pax.adult + order.excursion.pax.child + order.excursion.pax.infant) // считать ли инфанта
+                    {
+                        res.errors.Add(new ReservationError()
+                        {
+                            errortype = ReservationErrorType.user,
+                            isstop = true,
+                            message     = Resources.BookingStrings.Get("ErrorNoMorePlaces"),
+                            usermessage = Resources.BookingStrings.Get("ErrorNoMorePlaces"),
+                            number = 1,
+                            orderid = order.orderid
+                        });
+                    }
+                    else
+                    {
+                        placesList[key] = places - (order.excursion.pax.adult + order.excursion.pax.child + order.excursion.pax.infant);
+                    }
+                }
+            }
+
+            return res;
         }
+
+        private static int GetFreePlacesForExcursion(BookingOrder order)
+        {
+            //call  dbo.uf_CalcFreeExlimit(@Excurs int, @Date smalldatetime, @ExTime int, @Language int, @Region int)
+            var res = DatabaseOperationProvider.Query("SELECT [dbo].[uf_CalcFreeExlimit] (@ex, @date, @time, @lang, @reg)", 
+                                                    "services", 
+                                                     new {   ex   = order.excursion.id,
+                                                             date = order.excursion.date.ToString("yyyy-MM-dd"),
+                                                             time = order.excursion.extime,
+                                                             lang = order.excursion.language,
+                                                             reg  = order.excursion.departure
+                                                     });
+
+            int cnt = 1000;
+
+            foreach (DataRow row in res.Tables["services"].Rows)
+                try
+                {
+                    cnt = Convert.ToInt32(row[0]);
+                }
+                catch (Exception ex)
+                {
+                    Console.Write(ex.ToString());
+                    return 1000;
+                }
+
+            return cnt;
+        }
+
         public static ReservationState DoBooking(string language, int partnerId, int partnerPassId, BookingClaim claim)
         {
+            
+            //перед бронированием проверить наличие мест
             if (claim == null)
             {
                 throw new System.ArgumentNullException("claim");
             }
+
             XElement xml = BookingProvider.BuildBookingClaimXml(partnerId, claim);
+
+            var calcRes = DoCalculation(language, partnerId, claim);
+
+            if (calcRes.errors.Count > 0) return calcRes;
+
             return BookingProvider.BuildBookingProcessResult(language, "save", xml, new int?(partnerPassId));
         }
 
@@ -690,6 +785,46 @@ namespace GuestService.Data
             return resultString;
         }
 
+        private static void FillFoodEntryGuideCodeSpecCancel(ref Data.ReservationOrder item, string lang) {
+
+            if (item.excursion != null)
+            {
+                var res = DatabaseOperationProvider.Query("select food, guide, entryfees, skey from excurs where inc = @excID", "services", new { excID = item.excursion.id });
+
+                var list = new List<string>();
+
+                foreach (DataRow row in res.Tables["services"].Rows)
+                {
+                    item.excursion.guide = row.ReadInt("guide");
+                    item.excursion.food = row.ReadInt("food");
+                    item.excursion.entryfees = row.ReadInt("entryfees");
+                    item.excursion.code = row.ReadNullableTrimmedString("skey");
+                }
+            }
+
+            DataSet set = null;
+            if (lang == "ru")
+            {
+                set = DatabaseOperationProvider.Query("select tree, description from exdsc where tree in (6, 5) and excurs = @excID", "services", new { excID = item.excursion.id });
+
+            }
+            else
+            {
+                set = DatabaseOperationProvider.Query("select a.tree, b.description from exdsc as a, exdsclang as b, language as c where c.alias = @lang and b.lang = c.inc and a.inc=b.exdsc and a.tree in (6, 5) and a.excurs = @excID", "services", new { excID = item.excursion.id, lang = lang});
+            }
+
+            foreach (DataRow row in set.Tables["services"].Rows)
+            {
+                int tree = row.ReadInt("tree");
+
+                if (tree == 6)
+                    item.excursion.cancelations = row.ReadNullableTrimmedString("description");
+                else
+                    item.excursion.stuff = row.ReadNullableTrimmedString("description");
+            }
+        }
+
+
         private static ReservationState BuildBookingProcessResult(string language, string action, XElement xml, int? partnerPassId)
         {
             try
@@ -701,10 +836,13 @@ namespace GuestService.Data
                     lang = language,
                     partpass = partnerPassId
                 });
+
+
                 ReservationState result = (
                     from DataRow row in ds.Tables["state"].Rows
                     select BookingProvider.factory.ReservationState(row)).FirstOrDefault<ReservationState>();
 
+               
                 var orderNote = "";
 
                 try

@@ -25,11 +25,17 @@
             set;
         }
 
-        public string pickup
+        public string pickup //???
         {
             get;
             set;
         }
+        public string code { get; set; }    //new
+        public int guide { get; set; }      //new
+        public int food { get; set; }       //new
+        public int entryfees { get; set; }  //new
+        public string cancelations { get; set; } //new
+        public string stuff { get; set; }   //new
     }
 }
 
