@@ -36,6 +36,20 @@
 
             #endregion
 
+            #region  url = "{language}/partners/{country}";
+
+            name = "partners";
+            url = "{language}/partners/{country}";
+            defaults = new
+            {
+                controller = "partners",
+                action = "index",
+                country = UrlParameter.Optional
+            };
+            routes.MapRoute(name, url, defaults);
+
+            #endregion
+
             #region  url = "{language}/info/{id}";
             name = "info";
             url = "{language}/info/{id}";
