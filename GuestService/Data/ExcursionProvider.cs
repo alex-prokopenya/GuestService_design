@@ -532,6 +532,43 @@ namespace GuestService.Data
 
 
                 XElement categoriesEl;
+
+                bool searchInd = false;
+                bool searchGroup = false;
+
+                var listCatalog = new List<int>();
+
+                if(categories!=null)
+                    foreach (int category in categories)
+                        if (category == 3)
+                            searchInd = true;
+                        else if (category == 4)
+                            searchGroup = true;
+                        else
+                            listCatalog.Add(category);
+
+                List<int> allowedByGroup = new List<int>();
+
+                if (searchInd != searchGroup)
+                {
+                    try
+                    {
+                        var query = "select excurs from excatlist where excurscategory = " + (searchInd ? 3:4);
+
+                        //делаем фильтр экскурсий по id региона
+                        DataSet set = DatabaseOperationProvider.Query(query, "category", new { });
+
+                        foreach (DataRow row in set.Tables["category"].Rows)
+                            allowedByGroup.Add(row.ReadInt("excurs"));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+
+                categories = listCatalog.ToArray();
+
                 if (categories != null)
                 {
                     categoriesEl = new XElement("categories",
@@ -542,11 +579,10 @@ namespace GuestService.Data
                     categoriesEl = null;
 
                 array[2] = categoriesEl;
-
-
+                
                 XElement departuresEl;
+                
                 List<int> allowedIds = new List<int>();
-
                 //по полученому региону начала экскурсии получаем список айдишников экскурсий
                 if (departures != null)
                 {
@@ -616,23 +652,19 @@ namespace GuestService.Data
                     withpriceonly = !withoutPrice
                 });
 
-                if (allowedIds.Count > 0)
-                    return (
+              
+                return (
                          from DataRow row in ds.Tables["excursions"].Rows
-                         where allowedIds.Contains(row.ReadInt("excurs$inc")) //> 0 
+                         where ((allowedIds.Contains(row.ReadInt("excurs$inc")) || allowedIds.Count == 0) 
+                                                                    && 
+                               (allowedByGroup.Contains(row.ReadInt("excurs$inc")) || allowedByGroup.Count == 0))
+
                          select new CatalogExcursionMinPrice
                          {
                              excursion = ExcursionProvider.factory.CatalogExcursion(row),
                              minPrice = ExcursionProvider.factory.CatalogExcursionMinPrice(row)
                          }).ToList<CatalogExcursionMinPrice>();
-                else
-                    return (
-                        from DataRow row in ds.Tables["excursions"].Rows
-                        select new CatalogExcursionMinPrice
-                        {
-                            excursion = ExcursionProvider.factory.CatalogExcursion(row),
-                            minPrice = ExcursionProvider.factory.CatalogExcursionMinPrice(row)
-                        }).ToList<CatalogExcursionMinPrice>();
+
             }
             catch (Exception ex)
             {

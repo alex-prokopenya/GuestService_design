@@ -25,7 +25,6 @@ namespace GuestService.Notifications
 
                 var message = BuildMessage(to, content.Subject, content.Body);
 
-
                 var client = new SmtpClient(ConfigurationManager.AppSettings.Get("smtp_server"),
                                             Convert.ToInt32(ConfigurationManager.AppSettings.Get("smtp_port")));
 
@@ -42,9 +41,9 @@ namespace GuestService.Notifications
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+               Console.WriteLine(ex.Message);
 
-                if (throwException) throw ex;
+               if (throwException) throw ex;
             }
         }
 

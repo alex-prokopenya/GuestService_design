@@ -17,6 +17,7 @@
                 this.Form.PartnerAlias = form.PartnerAlias;
                 this.Form.PartnerSessionID = form.PartnerSessionID;
                 this.Form.CustomerName = form.CustomerName;
+                this.Form.CustomerSecondName = form.CustomerSecondName;
                 this.Form.CustomerAddress = form.CustomerAddress;
                 this.Form.CustomerEmail = form.CustomerEmail;
                 this.Form.CustomerMobile = form.CustomerMobile;

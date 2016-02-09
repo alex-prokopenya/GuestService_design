@@ -43,8 +43,12 @@
             if (strings[str].ContainsKey(key))
                 return strings[str][key];
             
+            var tmp = BookingStrings.ResourceManager.GetString(key, BookingStrings.resourceCulture);
 
-            return BookingStrings.ResourceManager.GetString(key, BookingStrings.resourceCulture);
+            if (tmp == null)
+                return "not found " + key;
+            else
+                return tmp;
         }
 
         internal BookingStrings()
@@ -162,7 +166,29 @@
                 return ResourceManager.GetString("BookingModel_R_CustomerMobile", resourceCulture);
             }
         }
+        public static string BookingModel_R_CustomerSecondNameReg
+        {
+            get
+            {
+                return Get("BookingModel_R_CustomerSecondNameReg");
+            }
+        }
+        public static string BookingModel_R_CustomerNameReg
+        {
+            get
+            {
+                return Get("BookingModel_R_CustomerNameReg");
+            }
+        }
 
+
+        public static string BookingModel_R_CustomerSecondName
+        {
+            get
+            {
+                return Get("BookingModel_R_CustomerSecondName");
+            }
+        }
         public static string BookingModel_R_CustomerName
         {
             get

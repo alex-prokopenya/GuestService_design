@@ -19,14 +19,20 @@
 
         public string CustomerAddress { get; set; }
 
+       
         [Required(ErrorMessageResourceName="BookingModel_R_UserEmail", ErrorMessageResourceType=typeof(BookingStrings))]
         public string CustomerEmail { get; set; }
 
         [Required(ErrorMessageResourceName="BookingModel_R_CustomerMobile", ErrorMessageResourceType=typeof(BookingStrings))]
         public string CustomerMobile { get; set; }
 
+        [RegularExpression(@"^[a-zA-Z''-'\s]{1,40}$",  ErrorMessageResourceName = "BookingModel_R_CustomerNameReg", ErrorMessageResourceType = typeof(BookingStrings))]
         [Required(ErrorMessageResourceName="BookingModel_R_CustomerName", ErrorMessageResourceType=typeof(BookingStrings))]
         public string CustomerName { get; set; }
+
+        [RegularExpression(@"^[a-zA-Z''-'\s]{1,40}$", ErrorMessageResourceName = "BookingModel_R_CustomerSecondNameReg", ErrorMessageResourceType = typeof(BookingStrings))]
+        [Required(ErrorMessageResourceName = "BookingModel_R_CustomerSecondName", ErrorMessageResourceType = typeof(BookingStrings))]
+        public string CustomerSecondName { get; set; }
 
         public List<BookingOrderModel> Orders { get; private set; }
 

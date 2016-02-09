@@ -241,7 +241,7 @@
             GuestService.Controllers.Api.BookingController controller = new GuestService.Controllers.Api.BookingController();
             bookingClaim.note = form.BookingNote;
             Customer customer = new Customer {
-                name = form.CustomerName,
+                name = form.CustomerName + " " + form.CustomerSecondName,
                 mobile = form.CustomerMobile,
                 email = form.CustomerEmail,
                 address = form.CustomerAddress
