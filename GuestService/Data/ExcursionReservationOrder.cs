@@ -25,6 +25,12 @@
             set;
         }
 
+        public string pickuptime //???
+        {
+            get;
+            set;
+        }
+
         public string pickup //???
         {
             get;

@@ -258,6 +258,8 @@ namespace GuestService.Data
                             included = GetExcursionIncluded(row.ReadInt("excursid"), language),
 
                             pickup = GetExcursionPickup(row.ReadInt("excursid"), language, claimId, orderNote)
+                            
+                            
                         };
 
                         FillFoodEntryGuideCodeSpecCancel(ref result, language);
@@ -785,6 +787,31 @@ namespace GuestService.Data
             return resultString;
         }
 
+        private static string GetExcursionPickupTime(int orderId)
+        {
+            try {
+
+               
+                DataSet res = null;
+                res = DatabaseOperationProvider.Query("select picktime from exsale where [order] = @orderId", "services", new { orderId = orderId });
+
+                DateTime? pickTime = null;
+
+                foreach (DataRow row in res.Tables["services"].Rows)
+                    pickTime = row.ReadNullableDateTime("picktime");
+
+                if (pickTime != null)
+                    return pickTime.Value.ToString("HH:mm");
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return null;
+        }
+
+
         private static void FillFoodEntryGuideCodeSpecCancel(ref Data.ReservationOrder item, string lang) {
 
             if (item.excursion != null)
@@ -908,6 +935,24 @@ namespace GuestService.Data
                     catch (Exception ex)
                     { }
 
+                    //pickuptime = GetExcursionPickupTime(result.id)
+                    foreach (var order in result.orders)
+                    {
+                        if (order.excursion != null)
+                        {
+                            int realOrderId = GetRealOrderId(result.claimId.Value,
+                                                            order.datefrom,
+                                                            order.excursion.id,
+                                                            order.excursion.pickuppoint.id,
+                                                            order.excursion.time,
+                                                            order.partner.id);
+
+
+                            if (realOrderId > 0)
+                                order.excursion.pickuptime = GetExcursionPickupTime(realOrderId);
+                        }
+                    }
+
                     //делаем отбивку
                     Task[] tasks = new Task[]
                     {
@@ -925,6 +970,34 @@ namespace GuestService.Data
             }
             return null;
         }
+        private static int GetRealOrderId(int claimId, DateTime dateFrom, int excursionId, int pointFrom, ExcursionReservationTime extime, int partnerId) {
+
+            string orderFilter = "select inc from [order] " +
+                                 "where claim = @claim and "+
+                                       "datebeg = @datefrom and "+
+                                       "geopointfrom = @from and "+
+
+                                      ((extime != null) ? "extime = @extime and " : " extime is null and ") + 
+                                       "service = (select inc from service where excurs = @excurs and partner = @partner)";
+
+
+            var res = DatabaseOperationProvider.Query(orderFilter, "order", new {
+                                                                                    claim = claimId,
+                                                                                    datefrom = dateFrom,
+                                                                                    from = pointFrom,
+                                                                                    extime = (extime != null) ? extime.id : -1,
+                                                                                    excurs = excursionId,
+                                                                                    partner = partnerId
+            });
+
+
+            if (res.Tables[0].Rows.Count == 1)
+                return res.Tables[0].Rows[0].ReadInt("inc");
+
+            else
+                return -1;
+        }
+
 
         private static DateTime GetClaimTimelimit(int? claimId)
         {
