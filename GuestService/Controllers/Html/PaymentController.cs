@@ -18,6 +18,7 @@
     using System.IO;
     using System.Linq;
     using System.Web.Mvc;
+    using GuestService.Code.Payment;
 
     [HttpPreferences, UrlLanguage, WebSecurityInitializer]
     public class PaymentController : BaseController
@@ -159,7 +160,10 @@
                         return this.Processing_Uniteller(model.claimId, paymentMode);
 
                     case "payu":
-                        return this.Processing_PayU(model.claimId, paymentMode);
+                    //    return this.Processing_PayU(model.claimId, paymentMode);
+
+                    case "jcc":
+                        return this.Processing_JCC(model.claimId, paymentMode);
 
                     case "cash":
                         return new RedirectResult(base.Url.Action("howtopay", "info"));
@@ -203,7 +207,10 @@
                         return this.Processing_Uniteller(model.claimId, paymentMode);
 
                     case "payu":
-                        return this.Processing_PayU(model.claimId, paymentMode);
+                    //    return this.Processing_PayU(model.claimId, paymentMode);
+
+                    case "jcc":
+                        return this.Processing_JCC(model.claimId, paymentMode);
 
                     default:
                         break;
@@ -356,6 +363,35 @@
             return base.View(@"PaymentSystems\Uniteller", model);
         }
 
+        [ActionName("test"), HttpGet]
+        public ActionResult ProcessingResult(string id)
+        {
+            string text = (id ?? "").ToLowerInvariant();
+
+           
+            throw new Exception(string.Format("unsupported processing system '{0}'", id));
+        }
+
+        [ActionName("processingresult"), HttpPost]
+        public ActionResult ProcessingResult(ProcessingResultModel model)
+        {
+            string text = (Request["acc"] ?? "").ToLowerInvariant();
+
+            if (text != null)
+            {
+                switch (text)
+                {  
+                    case "jcc":
+
+                        return this.ProcessingResult_JCC(model);
+
+                    default:
+                        break;
+                }
+            }
+            throw new Exception(string.Format("unsupported processing system '{0}'", text));
+        }
+
         [ActionName("processingresult"), HttpGet]
         public ActionResult ProcessingResult(string id, ProcessingResultModel model)
         {
@@ -372,8 +408,12 @@
                         return this.ProcessingResult_Uniteller(model);
 
                     case "payu":
+                   //     model.success = model.result == "1";
+                   //     return this.ProcessingResult_PayU(model);
+
+                    case "jcc":
                         model.success = model.result == "1";
-                        return this.ProcessingResult_PayU(model);
+                        return this.ProcessingResult_JCC(model);
 
                     default:
                         break;
@@ -513,6 +553,9 @@
             return base.View("_ProcessingResult", context);
         }
 
+
+        #region PayU
+
         private ActionResult Processing_PayU(int claim, PaymentMode payment)
         {
             if (payment == null)
@@ -571,6 +614,74 @@
             }
             return base.View("_ProcessingResult", context);
         }
+
+        #endregion
+
+
+        #region JCC
+        private ActionResult Processing_JCC(int claim, PaymentMode payment)
+        {
+            if (payment == null)
+            {
+                throw new System.ArgumentNullException("payment");
+            }
+            PaymentBeforeProcessingResult beforePaymentResult = BookingProvider.BeforePaymentProcessing(UrlLanguage.CurrentLanguage, payment.paymentparam);
+            if (beforePaymentResult == null)
+            {
+                throw new System.Exception("cannot get payment details");
+            }
+            if (!beforePaymentResult.success)
+            {
+                throw new System.Exception("payment details fail");
+            }
+            return base.View("PaymentSystems\\JCC", new ProcessingContext
+            {
+                Reservation = BookingProvider.GetReservationState(UrlLanguage.CurrentLanguage, claim),
+                PaymentMode = payment,
+                BeforePaymentResult = beforePaymentResult
+            });
+        }
+
+        private ActionResult ProcessingResult_JCC(ProcessingResultModel model)
+        {
+            if (model == null)
+            {
+                throw new System.ArgumentNullException("model");
+            }
+            PaymentResultContext context = new PaymentResultContext();
+            var paymentResult = JccPaymentResult.Create(Request);
+
+
+            if (paymentResult.Status == JccPaymentResult.OpeationStatus.Success)
+            {
+                context.Success = true;
+                context.Order = model.order;
+                ConfirmInvoiceResult invoiceResult = BookingProvider.ConfirmInvoice(model.invoice);
+
+                Tracing.DataTrace.TraceEvent(TraceEventType.Information, 0, "JCC transaction: invoice: '{0}', invoice confirmation: '{1}'", new object[]
+                {
+                    model.invoice,
+                    invoiceResult.IsSuccess ? "SUCCESS" : "FAILED"
+                });
+
+                if (!invoiceResult.IsSuccess)
+                {
+                    context.Errors.Add(string.Format("invoice confirmation error: {0}", invoiceResult.ErrorMessage));
+                }
+                else
+                {
+                    context.Success = true;
+                    BookingProvider.AcceptInvoice(Convert.ToInt32(context.Order));
+                }
+            }
+            else
+            {
+                context.Errors.Add(PaymentStrings.PaymentCancelled);
+            }
+            return base.View("_ProcessingResult", context);
+        }
+
+        #endregion
     }
 }
 

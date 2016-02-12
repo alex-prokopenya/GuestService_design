@@ -943,7 +943,7 @@ namespace GuestService.Data
                             int realOrderId = GetRealOrderId(result.claimId.Value,
                                                             order.datefrom,
                                                             order.excursion.id,
-                                                            order.excursion.pickuppoint.id,
+                                                            order.excursion.pickuppoint,
                                                             order.excursion.time,
                                                             order.partner.id);
 
@@ -970,32 +970,35 @@ namespace GuestService.Data
             }
             return null;
         }
-        private static int GetRealOrderId(int claimId, DateTime dateFrom, int excursionId, int pointFrom, ExcursionReservationTime extime, int partnerId) {
-
-            string orderFilter = "select inc from [order] " +
-                                 "where claim = @claim and "+
-                                       "datebeg = @datefrom and "+
-                                       "geopointfrom = @from and "+
-
-                                      ((extime != null) ? "extime = @extime and " : " extime is null and ") + 
-                                       "service = (select inc from service where excurs = @excurs and partner = @partner)";
-
-
-            var res = DatabaseOperationProvider.Query(orderFilter, "order", new {
-                                                                                    claim = claimId,
-                                                                                    datefrom = dateFrom,
-                                                                                    from = pointFrom,
-                                                                                    extime = (extime != null) ? extime.id : -1,
-                                                                                    excurs = excursionId,
-                                                                                    partner = partnerId
-            });
+        private static int GetRealOrderId(int claimId, DateTime dateFrom, int excursionId, PickupPlace pointFrom, ExcursionReservationTime extime, int partnerId) {
+            try
+            {
+                string orderFilter = "select inc from [order] " +
+                                     "where claim = @claim and " +
+                                           "datebeg = @datefrom and " +
+                                           ((pointFrom != null) ? " geopointfrom = @from and " : " geopointfrom is null and ") +
+                                          ((extime != null) ? "extime = @extime and " : " extime is null and ") +
+                                           "service = (select inc from service where excurs = @excurs and partner = @partner)";
 
 
-            if (res.Tables[0].Rows.Count == 1)
-                return res.Tables[0].Rows[0].ReadInt("inc");
+                var res = DatabaseOperationProvider.Query(orderFilter, "order", new
+                {
+                    claim = claimId,
+                    datefrom = dateFrom,
+                    from = (pointFrom != null) ? pointFrom.id : -1,
+                    extime = (extime != null) ? extime.id : -1,
+                    excurs = excursionId,
+                    partner = partnerId
+                });
 
-            else
-                return -1;
+
+                if (res.Tables[0].Rows.Count == 1)
+                    return res.Tables[0].Rows[0].ReadInt("inc");
+
+            }
+            catch (Exception) { }
+
+            return -1;
         }
 
 

@@ -104,6 +104,7 @@
     <Reference Include="System.Data.Entity" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Global.cs" />
+    <Compile Include="GuestService\Code\Payment\JccPaymentResult.cs" />
     <Compile Include="GuestService\Code\Payment\PayUPaymentResult.cs" />
     <Compile Include="GuestService\Code\StringsHelper.cs" />
     <Compile Include="GuestService\Controllers\Html\CountriesController.cs" />
