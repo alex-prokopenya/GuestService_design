@@ -76,7 +76,7 @@ namespace GuestService.Notifications
             m.AlternateViews.Add(avHtml);
 
             // Address and send the message
-            m.From = new MailAddress(ConfigurationManager.AppSettings.Get("smtp_user"), "ExGo.com info");
+            m.From = new MailAddress(ConfigurationManager.AppSettings.Get("smtp_user"), ConfigurationManager.AppSettings.Get("email_user_name"));
             m.To.Add(new MailAddress(to));
             m.Subject = subject;
             m.IsBodyHtml = true;

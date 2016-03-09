@@ -68,10 +68,10 @@ namespace GuestService.Controllers.Html
                                                 inner join partner as p on us.partnerId = p.inc or us.providerId = p.inc
                                                 inner join town as t on p.town = t.inc 
                                                 inner join state as s on t.state = s.inc
-                                            where p.lname like '%{0}%'", searchText);
+                                            where p.lname like @text", searchText);
 
             //текущий язык
-            DataSet set = DatabaseOperationProvider.Query(selectQuery, "partners", new { });
+            DataSet set = DatabaseOperationProvider.Query(selectQuery, "partners", new {text = string.Format("%{0}%", searchText) });
 
 
             var partners = new List<KeyValuePair<string, string>>();

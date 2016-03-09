@@ -20,6 +20,39 @@
     [UrlLanguage, HttpPreferences, WebSecurityInitializer, Authorize]
     public class AccountController : BaseController
     {
+        private static string cookieSalt = "securesalt";
+
+        private static string GetMd5Hash(string inp)
+        {
+            byte[] keyInBytes = System.Text.UTF8Encoding.UTF8.GetBytes("secret_key");
+            byte[] payloadInBytes = System.Text.UTF8Encoding.UTF8.GetBytes(inp);
+
+            var md5 = new System.Security.Cryptography.HMACMD5(keyInBytes);
+            byte[] hash = md5.ComputeHash(payloadInBytes);
+
+            var result = BitConverter.ToString(hash).Replace("-", string.Empty);
+            return result;
+        }
+
+        public static int GetUserByCookie(System.Web.HttpRequest req)
+        {
+            if ((req.Cookies["username"] != null) &&
+                (req.Cookies["userid"] != null) &&
+                (req.Cookies["authhash"] != null))
+            {
+                int id = Convert.ToInt32(req.Cookies["userid"]);
+                string name = req.Cookies["username"].ToString();
+                string authhash = req.Cookies["authhash"].ToString();
+
+                if (GetMd5Hash(name + id + cookieSalt) == authhash)
+                    return id;
+                else
+                    return -1;
+            }
+            else
+                return -1;
+        }
+
         [AllowAnonymous]
         public ActionResult Confirm(string email, string token)
         {
@@ -172,11 +205,15 @@
             if (base.ModelState.IsValid)
             {
                 bool rememberMe = model.RememberMe;
+
                 if (WebSecurity.Login(model.UserName, model.Password, rememberMe))
                 {
+                   
                     return this.RedirectToLocal(returnUrl);
                 }
+
                 int userId = WebSecurity.GetUserId(model.UserName);
+
                 if ((userId > 0) && !WebSecurity.IsConfirmed(model.UserName))
                 {
                     base.ModelState.AddModelError("", AccountStrings.AccountLogin_EmailNotConfirmed);
@@ -200,6 +237,7 @@
         public ActionResult LogOff()
         {
             WebSecurity.Logout();
+            base.Session.Abandon();
             return base.RedirectToAction("index", "welcome");
         }
 
@@ -217,6 +255,7 @@
             {
                 try
                 {
+                 
                     string confirmationToken = WebSecurity.GeneratePasswordResetToken(model.UserName, 0x5a0);
                     this.SendRegistrationConfirmMail(ConfirmMailOperation.recovery, model.UserName, confirmationToken);
                     return base.RedirectToAction("recoverysuccess", new { returnUrl = returnUrl });
@@ -260,6 +299,7 @@
             {
                 try
                 {
+                    
                     bool requireConfirmationToken = true;
                     string confirmationToken = WebSecurity.CreateUserAndAccount(model.UserName, model.Password, null, requireConfirmationToken);
                     this.SendRegistrationConfirmMail(ConfirmMailOperation.confirm, model.UserName, confirmationToken);

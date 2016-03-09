@@ -114,12 +114,30 @@
             name = "language";
             url = "{language}/{controller}/{action}/{id}";
             defaults = new {
+                 
                    controller = "excursion",
                    action = "index",
                    id = UrlParameter.Optional
             };
 
             routes.MapRoute(name, url, defaults, constraints);
+
+            #endregion
+
+
+            #region url = "";
+
+            name = "language2";
+            url = "";
+            defaults = new
+            {
+                language="en",
+                controller = "excursion",
+                action = "index",
+                id = UrlParameter.Optional
+            };
+
+            routes.MapRoute(name, url, defaults);
 
             #endregion
 
@@ -135,6 +153,8 @@
             routes.MapRoute(name, url, defaults);
 
             #endregion
+
+
         }
     }
 }

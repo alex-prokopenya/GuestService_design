@@ -49,6 +49,7 @@ namespace GuestService.Controllers.Api
                 throw new ArgumentNullException("claim");
             }
             WebPartner partner = UserToolsProvider.GetPartner(param);
+
             if (claim.customer != null)
             {
                 foreach (BookingOrder order in claim.orders)
