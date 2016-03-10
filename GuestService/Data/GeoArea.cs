@@ -17,6 +17,9 @@
 
         [XmlAttribute]
         public string name { get; set; }
+
+        [XmlAttribute]
+        public string state { get; set; }
     }
 }
 

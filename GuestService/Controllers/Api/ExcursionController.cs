@@ -253,7 +253,7 @@
                 TimeSpan? minDuration = null;
                 List<CatalogExcursionMinPrice> catalog = ExcursionProvider.FindExcursions(param.Language, partner.id, startDate, null, null, param.StartPoint, null, null, null, param.DestinationState.HasValue ? new int[] { param.DestinationState.Value } : null, null, minDuration, null, null, param.WithoutPrice);
                 result = new DeparturesResult {
-                    departures = ExcursionProvider.BuildRegionList(catalog)
+                    departures = ExcursionProvider.BuildRegionList(catalog).OrderBy(x => x.state).ToList()
                 };
 
                 HttpContext.Current.Cache.Add(key, result, null, DateTime.Now.AddMinutes(10.0), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);

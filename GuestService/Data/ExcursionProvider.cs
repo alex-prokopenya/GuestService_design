@@ -881,7 +881,9 @@ namespace GuestService.Data
             var geoData = new List<GeoArea>();
             try
             {
-                DataSet ds = DatabaseOperationProvider.Query("select name, lname, inc from region where inc in (select region from excurs where inc in ("+excKeys+"))", "regions", new
+                DataSet ds = DatabaseOperationProvider.Query("select reg.name, reg.lname, reg.inc, st.lname as 'lnameState' from region as reg" +
+                                                             " inner join state as st on reg.state = st.inc" +
+                                                             " where reg.inc in (select region from excurs where inc in (" + excKeys + "))", "regions", new
                 {
                 });
 
@@ -889,6 +891,8 @@ namespace GuestService.Data
                 {
                     geoData.Add(new GeoArea()
                     {
+                        state = row.ReadNullableTrimmedString("lnameState"),
+
                         name = row.ReadNullableTrimmedString("lname"),
 
                         alias = row.ReadNullableTrimmedString("name"),
