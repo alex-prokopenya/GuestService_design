@@ -64,12 +64,11 @@ namespace GuestService.Data
         public static PartnerContent GetPartnerContent(string lang)
         {
             //current domain
-
             try
             {
                 var domain = "excursions.ru-kipr.ru";
 
-                //domain = HttpContext.Current.Request.Url.Host;
+                domain = HttpContext.Current.Request.Url.Host;
                 //current page
                 //current language
 
@@ -96,7 +95,7 @@ namespace GuestService.Data
             }
             catch (Exception ex)
             {
-                return new Data.PartnerContent();
+                return new Data.PartnerContent() { Description = ex.Message + "<br>" + ex.StackTrace};
             }
         }
     }
