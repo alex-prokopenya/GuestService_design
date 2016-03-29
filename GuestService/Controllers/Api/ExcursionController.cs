@@ -62,6 +62,32 @@
                     excursion.ranking = CatalogExcursionRanking.Create(rank, param.Language);
                 }
             }
+
+            //вынести отдельно индивидуальные и групповые
+            //если в фильтре нет категорий кроме 3 и 4, то можем брать кол-во из результатов поиска
+            List<int> cats = new List<int>();
+            List<int> indGroup = new List<int>();
+
+            if (param.Categories != null)
+                foreach (int cat in param.Categories)
+                    if ((cat != 3) && (cat != 4))
+                        cats.Add(cat);
+                    else
+                        indGroup.Add(cat);
+
+
+            if (cats.Count == 0)
+                result.categorygroups = ExcursionProvider.BuildFilterCategories(result.excursions, null);
+            else //если есть, то ищем по фильтру 4 и 3
+            {
+                var excursions = ExcursionProvider.FindExcursions(param.Language, partner.id, param.FirstDate, param.LastDate, param.SearchLimit, param.StartPoint, param.SearchText, indGroup.ToArray(), param.Departures, (param.Destinations != null && param.Destinations.Length > 0) ? param.Destinations : (param.DestinationState.HasValue ? new int[]
+                {
+                    param.DestinationState.Value
+                } : null), param.ExcursionLanguages, param.MinDuration, param.MaxDuration, new ExcursionProvider.ExcursionSorting?(sorting), param.WithoutPrice);
+
+                result.categorygroups = ExcursionProvider.BuildFilterCategories(excursions, null);
+            }
+
             return result;
         }
 
@@ -408,6 +434,7 @@
                 result.durations = ExcursionProvider.BuildFilterDurations(catalog);
                 HttpContext.Current.Cache.Add(key, result, null, DateTime.Now.AddMinutes(10.0), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
             }
+            
             return result;
         }
 

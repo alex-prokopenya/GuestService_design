@@ -9,6 +9,9 @@
     {
         [XmlArray("Excursions")]
         public List<CatalogExcursionMinPrice> excursions { get; set; }
+
+        [XmlArray("CategoryGroups")]
+        public List<CatalogFilterCategoryGroup> categorygroups { get; set; }
     }
 }
 
