@@ -119,9 +119,11 @@
     <Compile Include="GuestService\Data\ReservationCustomer.cs" />
     <Compile Include="GuestService\Data\SeoObjectProvider.cs" />
     <Compile Include="GuestService\Models\AccountConfirmationTemplate.cs" />
+    <Compile Include="GuestService\Models\CancellationMessageTemplate.cs" />
     <Compile Include="GuestService\Models\Countries\CountriesCatalog.cs" />
     <Compile Include="GuestService\Models\Countries\CountryPartners.cs" />
     <Compile Include="GuestService\Models\Countries\CountryRegions.cs" />
+    <Compile Include="GuestService\Models\Guest\CancellationOrderWebParam.cs" />
     <Compile Include="GuestService\Models\SeoObject.cs" />
     <Compile Include="GuestService\Notifications\EmailMessage.cs" />
     <Compile Include="GuestService\Notifications\SimpleEmailService.cs" />

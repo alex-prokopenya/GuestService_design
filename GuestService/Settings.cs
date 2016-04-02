@@ -157,6 +157,24 @@
                 return (string.IsNullOrWhiteSpace(str) ? null : str);
             }
         }
+
+        public static string[] isShowButtonAnnulationStatuses
+        {
+            get
+            {
+                string str = ConfigurationManager.AppSettings.AsString("isShowButtonAnnulationStatuses", null);
+                return (string.IsNullOrWhiteSpace(str) ? null : str.Split(','));
+            }
+        }
+
+        public static string EmailForCancellation
+        {
+            get
+            {
+                string str = ConfigurationManager.AppSettings.AsString("emailForCancellation", null);
+                return (string.IsNullOrWhiteSpace(str) ? null : str);
+            }
+        }
     }
 }
 
