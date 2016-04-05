@@ -383,37 +383,8 @@
             return base.RedirectToAction("order");
         }
 
-        [HttpPost, ActionName("SendCancellationOrder")]
-        public JsonResult SendCancellationOrder(CancellationOrderWebParam param)
-        {
-            try
-            {
-                ReservationState claim = BookingProvider.GetReservationState(UrlLanguage.CurrentLanguage, param.claimId);
+     
 
-                var customer = claim.customer;
 
-                new SimpleEmailService().SendEmail<CancellationMessageTemplate>(Settings.EmailForCancellation,
-                                                                "send_cancellation_order",
-                                                                "en",
-                                                                new CancellationMessageTemplate()
-                                                                {
-                                                                    NumberOrder = param.claimId.ToString(),
-                                                                    ReasonCancellation = param.reason,
-                                                                    Name = customer.name,
-                                                                    Phone = customer.phone,
-                                                                    Email = customer.mail
-                                                                });
-
-                return base.Json(new { ok = true });
-            }
-            catch (Exception)
-            {
-                
-            }
-
-            return base.Json(new { ok = false });
-        }
-
-        
     }
 }

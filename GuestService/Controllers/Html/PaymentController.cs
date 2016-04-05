@@ -19,10 +19,45 @@
     using System.Linq;
     using System.Web.Mvc;
     using GuestService.Code.Payment;
+    using GuestService.Models.Guest;
+
+    using GuestService.Models;
+    using GuestService.Notifications;
 
     [HttpPreferences, UrlLanguage, WebSecurityInitializer]
     public class PaymentController : BaseController
     {
+        [HttpPost, ActionName("cancelorder")]
+        public JsonResult SendCancellationOrder(CancellationOrderWebParam param)
+        {
+            try
+            {
+                ReservationState claim = BookingProvider.GetReservationState(UrlLanguage.CurrentLanguage, param.claimId);
+
+                var customer = claim.customer;
+
+                new SimpleEmailService().SendEmail<CancellationMessageTemplate>(Settings.EmailForCancellation,
+                                                                "send_cancellation_order",
+                                                                "en",
+                                                                new CancellationMessageTemplate()
+                                                                {
+                                                                    NumberOrder = param.claimId.ToString(),
+                                                                    ReasonCancellation = param.reason,
+                                                                    Name = customer.name,
+                                                                    Phone = customer.phone,
+                                                                    Email = customer.mail
+                                                                });
+
+                return base.Json(new { ok = true });
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return base.Json(new { ok = false });
+        }
+
         [HttpPost, ValidateAntiForgeryToken, ActionName("index")]
         public ActionResult Index(PaymentModel model)
         {
