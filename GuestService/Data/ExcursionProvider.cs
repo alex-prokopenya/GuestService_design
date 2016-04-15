@@ -70,8 +70,10 @@ namespace GuestService.Data
                     id = row.ReadInt("excurs$inc"),
                     name = row.ReadNullableTrimmedString("excurs$name"),
                     url = row.ReadNullableTrimmedString("excurs$url"),
+                    video_url = row.ReadNullableTrimmedString("excurs$video_url"),
 
-                    
+
+
 
                     excursionPartner = row.IsNull("expartner$inc") ? null : new Partner
                     {
