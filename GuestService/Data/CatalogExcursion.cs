@@ -51,6 +51,9 @@
 
         [XmlAttribute]
         public string text  {get; set; }
+
+        [XmlAttribute]
+        public string video_url { get; set; }
     }
 }
 
