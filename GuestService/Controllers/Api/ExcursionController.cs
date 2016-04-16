@@ -379,8 +379,6 @@
                             ed.isstopsale = true;
                     }
                 }
-
-
                 list.Add(item);
             }
             return list;

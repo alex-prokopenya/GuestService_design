@@ -48,6 +48,7 @@
                                                                     Email = customer.mail
                                                                 });
 
+                BookingProvider.ChangeClaimStatus(claim.claimId.Value, Settings.AnnulateRequestStatusId, claim.status.id);
                 return base.Json(new { ok = true });
             }
             catch (Exception)
@@ -138,6 +139,8 @@
                 context.PaymentModes = BookingProvider.GetPaymentModes(UrlLanguage.CurrentLanguage, claim.Value);
             }
 
+            context.PaymentModes = BookingController.ApplyPaymentComissions(context.PaymentModes, context.Reservation.price);
+
             if (!string.IsNullOrEmpty( Request.Params["paymentMethod"] ))
             {
                return ProcessingPrivate(new ProcessingModel() {
@@ -225,10 +228,23 @@
                 from m in BookingProvider.GetPaymentModes(UrlLanguage.CurrentLanguage, model.claimId)
                 where m.id == model.paymentId
                 select m).FirstOrDefault<PaymentMode>();
+
+
             if (paymentMode == null)
             {
                 throw new System.Exception(string.Format("payment mode id '{0}' not found", model.paymentId));
             }
+
+            var tempPaymentModes = BookingController.ApplyPaymentComissions(  new List<PaymentMode>() { paymentMode },
+
+                                                                              new ReservationPrice()
+                                                                              {
+                                                                                 currency = paymentMode.payrest.currency,
+                                                                                 total = paymentMode.payrest.total
+                                                                              });
+
+            paymentMode = tempPaymentModes[0];
+
             string text = (paymentMode.processing ?? "").ToLowerInvariant();
 
             if (text != null)

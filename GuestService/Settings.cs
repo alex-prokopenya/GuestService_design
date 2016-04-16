@@ -175,6 +175,14 @@
                 return (string.IsNullOrWhiteSpace(str) ? null : str);
             }
         }
+
+        public static int AnnulateRequestStatusId
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings.AsInt("AnnulateRequestStatusId", 10);
+            }
+        }
     }
 }
 
