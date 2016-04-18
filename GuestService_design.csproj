@@ -74,7 +74,7 @@
       <HintPath>..\..\..\Visual Studio 2015\WebSites\geustservice-partner\bin\System.Web.Optimization.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http">
-      <HintPath>..\..\..\..\..\..\Temp\guestservice-20150610\bin\System.Net.Http.dll</HintPath>
+      <HintPath>..\..\Visual Studio 2015\WebSites\GuestserviceDesign\bin\System.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="Sm.System">
@@ -111,6 +111,7 @@
     <Compile Include="GuestService\Code\Payment\PayUPaymentResult.cs" />
     <Compile Include="GuestService\Code\StringsHelper.cs" />
     <Compile Include="GuestService\Controllers\Html\CountriesController.cs" />
+    <Compile Include="GuestService\Controllers\Html\FeedbackFormController.cs" />
     <Compile Include="GuestService\Controllers\Html\InfoController.cs" />
     <Compile Include="GuestService\Controllers\Html\PartnersController.cs" />
     <Compile Include="GuestService\Data\GuideProvider.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="GuestService\Models\Countries\CountriesCatalog.cs" />
     <Compile Include="GuestService\Models\Countries\CountryPartners.cs" />
     <Compile Include="GuestService\Models\Countries\CountryRegions.cs" />
+    <Compile Include="GuestService\Models\FeedbackFormContext.cs" />
     <Compile Include="GuestService\Models\Guest\CancellationOrderWebParam.cs" />
     <Compile Include="GuestService\Models\SeoObject.cs" />
     <Compile Include="GuestService\Notifications\EmailMessage.cs" />
