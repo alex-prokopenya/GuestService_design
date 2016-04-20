@@ -12,6 +12,7 @@
     using System;
     using System.Collections.Generic;
     using System.Web.Mvc;
+    using Newtonsoft.Json;
 
     [UrlLanguage, HttpPreferences, WebSecurityInitializer]
     public class ExcursionController : BaseController
@@ -135,11 +136,21 @@
             model.StartPointAlias = param.StartPointAlias;
             model.ExcursionDate = DateTime.Today.Date.AddDays((double)Settings.ExcursionDefaultDate);
             model.ExternalCartId = param.ExternalCartId;
-
             model.NavigateState = new ExcursionIndexNavigateCommand();
             param.sc = "description";
             param.ex = id;
-            param.dt = DateTime.Today.AddDays(2);
+
+            var paramsFilter = Request.QueryString["filter"];
+
+            if (!String.IsNullOrEmpty(paramsFilter))
+            {
+                var jsonFilter = JsonConvert.DeserializeObject<CatalogParam>(paramsFilter);
+                var dateTmp = jsonFilter.fd;
+                param.dt = dateTmp.Value;
+            }
+            else  //по умолчанию берем цены на послезавтра
+                param.dt = DateTime.Today.AddDays(2);
+
 
             var seoObject = Data.SeoObjectProvider.GetSeoObject(id.Value, "excursion", UrlLanguage.CurrentLanguage);
             model.Description = seoObject.Description;
