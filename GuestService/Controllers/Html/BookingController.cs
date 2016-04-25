@@ -333,28 +333,33 @@
 
         public static List<PaymentMode> ApplyPaymentComissions(List<PaymentMode> modes, ReservationPrice topay)
         {
+
             for (int i = 0; i < modes.Count; i++)
             {
-                var modeId = modes[i].id.Split('.')[0];
-
-                decimal comissionProcent = 0;
-                //если есть комиссия
-                if (ConfigurationManager.AppSettings.AllKeys.Contains("PaymentModeComission_" + modeId))
+                try
                 {
-                    comissionProcent = Convert.ToDecimal(ConfigurationManager.AppSettings["PaymentModeComission_" + modeId]);
+                    var modeId = modes[i].id.Split('.')[0];
+
+                    decimal comissionProcent = 0;
+                    //если есть комиссия
+                    if (ConfigurationManager.AppSettings.AllKeys.Contains("PaymentModeComission_" + modeId))
+                    {
+                        comissionProcent = Convert.ToDecimal(ConfigurationManager.AppSettings["PaymentModeComission_" + modeId]);
+                    }
+
+                    modes[i].comission = new ReservationOrderPrice()
+                    {
+                        currency = topay.currency,
+                        total = Math.Round((topay.total / 100m * comissionProcent), 2)
+                    };
+
+                    modes[i].payrest = new ReservationOrderPrice()
+                    {
+                        currency = topay.currency,
+                        total = Math.Round(modes[i].comission.total + topay.total, 2)
+                    };
                 }
-
-                modes[i].comission = new ReservationOrderPrice()
-                { 
-                    currency = topay.currency,
-                    total = Math.Round( (topay.total / 100m * comissionProcent), 2)
-                };
-
-                modes[i].payrest = new ReservationOrderPrice() {
-                    currency = topay.currency,
-                    total = Math.Round(modes[i].comission.total + topay.total, 2)
-                };
-                
+                catch (Exception) { }
             }
 
             return modes;

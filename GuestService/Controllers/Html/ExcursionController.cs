@@ -146,7 +146,11 @@
             {
                 var jsonFilter = JsonConvert.DeserializeObject<CatalogParam>(paramsFilter);
                 var dateTmp = jsonFilter.fd;
-                param.dt = dateTmp.Value;
+
+                if(dateTmp.HasValue)
+                    param.dt = dateTmp.Value;
+                else
+                    param.dt = DateTime.Today.AddDays(2);
             }
             else  //по умолчанию берем цены на послезавтра
                 param.dt = DateTime.Today.AddDays(2);
