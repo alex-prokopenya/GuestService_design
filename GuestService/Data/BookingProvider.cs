@@ -1266,19 +1266,29 @@ namespace GuestService.Data
         {
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["db"].ConnectionString))
             {
-                using (SqlCommand command = connection.CreateCommand())
+                connection.Open();
+                try
                 {
-                    //меняем статус
-                    command.CommandText = "update claim set status = " + newStatus + " where inc = " + claimId;
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        //меняем статус
+                        command.CommandText = "update claim set status = " + newStatus + " where inc = " + claimId;
 
-                    command.ExecuteNonQuery();
+                        command.ExecuteNonQuery();
 
-                    //пишем в историю
-                    command.CommandText = "insert into " +
-                                        "history(  mode ,type ,claim ,edate ,recinc ,[user] ,name ,lname  ) " +
-                                         " values ('E','CANCELLATION'," + claimId + ", getdate(), " + claimId + ",1,'Cancellation request','Cancellation request')";
+                        //пишем в историю
+                        command.CommandText = "insert into " +
+                                            "history(  mode ,type ,claim ,edate ,recinc ,[user] ,name ,lname  ) " +
+                                             " values ('E','CANCELLATION'," + claimId + ", getdate(), " + claimId + ",1,'Cancellation request','Cancellation request')";
 
-                    command.ExecuteNonQuery();
+                        command.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception)
+                { }
+                finally
+                {
+                    connection.Close();
                 }
             }
         }
