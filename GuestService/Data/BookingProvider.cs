@@ -89,7 +89,7 @@ namespace GuestService.Data
                     status = row.IsNull("status_id") ? null : new ReservationStatus
                     {
                         id = row.ReadInt("status_id"),
-                        description = row.ReadNullableTrimmedString("status_name")
+                        description = (!row.IsNull("status_lname")) ? row.ReadNullableTrimmedString("status_lname") : row.ReadNullableTrimmedString("status_name")
                     },
                     partner = row.IsNull("partner_id") ? null : new ReservationPartner
                     {
@@ -162,7 +162,7 @@ namespace GuestService.Data
                     status = new ReservationStatus
                     {
                         id = row.ReadInt("actstatusid"),
-                        description = row.ReadNullableTrimmedString("actstatusname")
+                        description = (!row.IsNull("actstatuslname")) ? row.ReadNullableTrimmedString("actstatuslname") : row.ReadNullableTrimmedString("actstatusname")
                     },
                     datefrom = row.ReadUnspecifiedDateTime("datefrom"),
                     datetill = row.ReadUnspecifiedDateTime("datetill"),
@@ -232,12 +232,12 @@ namespace GuestService.Data
                             time = row.IsNull("extimeid") ? null : new ExcursionReservationTime
                             {
                                 id = row.ReadInt("extimeid"),
-                                description = row.ReadNullableTrimmedString("extimename")
+                                description = (!row.IsNull("extimelname")) ? row.ReadNullableTrimmedString("extimelname") : row.ReadNullableTrimmedString("extimename")
                             },
                             grouptype = row.IsNull("exgrouptypeid") ? null : new ExcursionReservationGroup
                             {
                                 id = row.ReadInt("exgrouptypeid"),
-                                description = row.ReadNullableTrimmedString("exgrouptypename")
+                                description = (!row.IsNull("exgrouptypelname")) ? row.ReadNullableTrimmedString("exgrouptypelname") : row.ReadNullableTrimmedString("exgrouptypename")
                             },
                             language = row.IsNull("languageid") ? null : new ExcursionReservationLanguage
                             {
