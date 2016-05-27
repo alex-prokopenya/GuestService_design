@@ -3,6 +3,7 @@ using System;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using WebMatrix.WebData;
+//using System.Data.Entity
 namespace GuestService.Code
 {
     public static class WebSecurityInitializer

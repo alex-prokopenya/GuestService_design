@@ -20,7 +20,8 @@
 
         private static Dictionary<string, Dictionary<string, string>> strings = new Dictionary<string, Dictionary<string, string>>();
 
-        public static string Get(string key)
+
+        public static string Get(string key, CultureInfo resourceCultureParam = null)
         {
             var str = UrlLanguage.CurrentLanguage;
 
@@ -43,7 +44,7 @@
             if (strings[str].ContainsKey(key))
                 return strings[str][key];
 
-            return AccountStrings.ResourceManager.GetString(key, AccountStrings.resourceCulture);
+            return AccountStrings.ResourceManager.GetString(key, resourceCultureParam !=null? resourceCultureParam : AccountStrings.resourceCulture);
         }
 
         internal AccountStrings()
@@ -54,7 +55,7 @@
         {
             get
             {
-                return ResourceManager.GetString("AccountLogin_EmailNotConfirmed", resourceCulture);
+                return Get("AccountLogin_EmailNotConfirmed", resourceCulture);
             }
         }
 
@@ -62,7 +63,7 @@
         {
             get
             {
-                return ResourceManager.GetString("AccountLogin_InvalidCredentails", resourceCulture);
+                return Get("AccountLogin_InvalidCredentails", resourceCulture);
             }
         }
 
@@ -70,7 +71,7 @@
         {
             get
             {
-                return ResourceManager.GetString("AccountRecovery_CannotRecovery", resourceCulture);
+                return Get("AccountRecovery_CannotRecovery", resourceCulture);
             }
         }
 
@@ -78,7 +79,7 @@
         {
             get
             {
-                return ResourceManager.GetString("AccountResetPassword_CannotReset", resourceCulture);
+                return Get("AccountResetPassword_CannotReset", resourceCulture);
             }
         }
 
@@ -99,7 +100,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorDuplicateEmail", resourceCulture);
+                return Get("ErrorDuplicateEmail", resourceCulture);
             }
         }
 
@@ -107,7 +108,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorDuplicateUserName", resourceCulture);
+                return Get("ErrorDuplicateUserName", resourceCulture);
             }
         }
 
@@ -115,7 +116,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorInvalidAnswer", resourceCulture);
+                return Get("ErrorInvalidAnswer", resourceCulture);
             }
         }
 
@@ -123,7 +124,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorInvalidEmail", resourceCulture);
+                return Get("ErrorInvalidEmail", resourceCulture);
             }
         }
 
@@ -131,7 +132,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorInvalidPassword", resourceCulture);
+                return Get("ErrorInvalidPassword", resourceCulture);
             }
         }
 
@@ -139,7 +140,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorInvalidQuestion", resourceCulture);
+                return Get("ErrorInvalidQuestion", resourceCulture);
             }
         }
 
@@ -147,7 +148,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorInvalidUserName", resourceCulture);
+                return Get("ErrorInvalidUserName", resourceCulture);
             }
         }
 
@@ -155,7 +156,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorProviderError", resourceCulture);
+                return Get("ErrorProviderError", resourceCulture);
             }
         }
 
@@ -163,7 +164,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorUnknownError", resourceCulture);
+                return Get("ErrorUnknownError", resourceCulture);
             }
         }
 
@@ -171,7 +172,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorUserRejected", resourceCulture);
+                return Get("ErrorUserRejected", resourceCulture);
             }
         }
 
@@ -179,7 +180,7 @@
         {
             get
             {
-                return ResourceManager.GetString("LocalPasswordModel_C_ConfirmPassword", resourceCulture);
+                return Get("LocalPasswordModel_C_ConfirmPassword", resourceCulture);
             }
         }
 
@@ -187,7 +188,7 @@
         {
             get
             {
-                return ResourceManager.GetString("LocalPasswordModel_L_Password", resourceCulture);
+                return Get("LocalPasswordModel_L_Password", resourceCulture);
             }
         }
 
@@ -195,7 +196,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Login_AlreadyUser", resourceCulture);
+                return Get("Login_AlreadyUser", resourceCulture);
             }
         }
 
@@ -203,7 +204,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Login_Email", resourceCulture);
+                return Get("Login_Email", resourceCulture);
             }
         }
 
@@ -211,7 +212,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Login_Forget_1", resourceCulture);
+                return Get("Login_Forget_1", resourceCulture);
             }
         }
 
@@ -219,7 +220,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Login_Forget_2", resourceCulture);
+                return Get("Login_Forget_2", resourceCulture);
             }
         }
 
@@ -227,7 +228,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Login_LoginButton", resourceCulture);
+                return Get("Login_LoginButton", resourceCulture);
             }
         }
 
@@ -235,7 +236,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Login_LogoutButton", resourceCulture);
+                return Get("Login_LogoutButton", resourceCulture);
             }
         }
 
@@ -243,7 +244,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Login_Password", resourceCulture);
+                return Get("Login_Password", resourceCulture);
             }
         }
 
@@ -251,7 +252,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Login_Ph_Email", resourceCulture);
+                return Get("Login_Ph_Email", resourceCulture);
             }
         }
 
@@ -259,7 +260,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Login_Ph_Password", resourceCulture);
+                return Get("Login_Ph_Password", resourceCulture);
             }
         }
 
@@ -267,7 +268,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Login_RememberMe", resourceCulture);
+                return Get("Login_RememberMe", resourceCulture);
             }
         }
 
@@ -275,7 +276,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Login_Social", resourceCulture);
+                return Get("Login_Social", resourceCulture);
             }
         }
 
@@ -283,7 +284,7 @@
         {
             get
             {
-                return ResourceManager.GetString("LoginModel_C_ConfirmPassword", resourceCulture);
+                return Get("LoginModel_C_ConfirmPassword", resourceCulture);
             }
         }
 
@@ -291,7 +292,7 @@
         {
             get
             {
-                return ResourceManager.GetString("LoginModel_L_Password", resourceCulture);
+                return Get("LoginModel_L_Password", resourceCulture);
             }
         }
 
@@ -299,7 +300,7 @@
         {
             get
             {
-                return ResourceManager.GetString("LoginModel_R_Mail", resourceCulture);
+                return Get("LoginModel_R_Mail", resourceCulture);
             }
         }
 
@@ -307,7 +308,7 @@
         {
             get
             {
-                return ResourceManager.GetString("LoginModel_R_Password", resourceCulture);
+                return Get("LoginModel_R_Password", resourceCulture);
             }
         }
 
@@ -315,7 +316,7 @@
         {
             get
             {
-                return ResourceManager.GetString("LoginModel_R_UserName", resourceCulture);
+                return Get("LoginModel_R_UserName", resourceCulture);
             }
         }
 
@@ -323,7 +324,7 @@
         {
             get
             {
-                return ResourceManager.GetString("LoginText_1", resourceCulture);
+                return Get("LoginText_1", resourceCulture);
             }
         }
 
@@ -331,7 +332,7 @@
         {
             get
             {
-                return ResourceManager.GetString("LoginText_2", resourceCulture);
+                return Get("LoginText_2", resourceCulture);
             }
         }
 
@@ -339,7 +340,7 @@
         {
             get
             {
-                return ResourceManager.GetString("LoginTitle", resourceCulture);
+                return Get("LoginTitle", resourceCulture);
             }
         }
 
@@ -347,7 +348,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RecoveryModel_R_UserName", resourceCulture);
+                return Get("RecoveryModel_R_UserName", resourceCulture);
             }
         }
 
@@ -355,7 +356,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_As_1", resourceCulture);
+                return Get("Register_As_1", resourceCulture);
             }
         }
 
@@ -363,7 +364,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_As_2", resourceCulture);
+                return Get("Register_As_2", resourceCulture);
             }
         }
 
@@ -371,7 +372,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_Back", resourceCulture);
+                return Get("Register_Back", resourceCulture);
             }
         }
 
@@ -379,7 +380,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_ChangePassword", resourceCulture);
+                return Get("Register_ChangePassword", resourceCulture);
             }
         }
 
@@ -387,7 +388,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_ConfirmEmail", resourceCulture);
+                return Get("Register_ConfirmEmail", resourceCulture);
             }
         }
 
@@ -395,7 +396,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_ConfirmPassword", resourceCulture);
+                return Get("Register_ConfirmPassword", resourceCulture);
             }
         }
 
@@ -403,7 +404,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_Email", resourceCulture);
+                return Get("Register_Email", resourceCulture);
             }
         }
 
@@ -411,7 +412,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_EmailSuccess", resourceCulture);
+                return Get("Register_EmailSuccess", resourceCulture);
             }
         }
 
@@ -419,7 +420,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_EmailUnsuccess", resourceCulture);
+                return Get("Register_EmailUnsuccess", resourceCulture);
             }
         }
 
@@ -427,7 +428,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_ErrorSocial", resourceCulture);
+                return Get("Register_ErrorSocial", resourceCulture);
             }
         }
 
@@ -435,7 +436,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_ErrorSocialS", resourceCulture);
+                return Get("Register_ErrorSocialS", resourceCulture);
             }
         }
 
@@ -443,7 +444,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_MainFormLink", resourceCulture);
+                return Get("Register_MainFormLink", resourceCulture);
             }
         }
 
@@ -451,7 +452,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_Password", resourceCulture);
+                return Get("Register_Password", resourceCulture);
             }
         }
 
@@ -459,7 +460,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_Ph_ConfirmPassword", resourceCulture);
+                return Get("Register_Ph_ConfirmPassword", resourceCulture);
             }
         }
 
@@ -467,7 +468,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_Ph_Email", resourceCulture);
+                return Get("Register_Ph_Email", resourceCulture);
             }
         }
 
@@ -475,7 +476,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_Ph_Password", resourceCulture);
+                return Get("Register_Ph_Password", resourceCulture);
             }
         }
 
@@ -483,7 +484,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_RegisterButton", resourceCulture);
+                return Get("Register_RegisterButton", resourceCulture);
             }
         }
 
@@ -491,7 +492,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Register_ToMyAccount", resourceCulture);
+                return Get("Register_ToMyAccount", resourceCulture);
             }
         }
 
@@ -499,7 +500,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RegisterEmailNotConfirmed", resourceCulture);
+                return Get("RegisterEmailNotConfirmed", resourceCulture);
             }
         }
 
@@ -507,7 +508,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RegisterEmailNotConfirmedNote", resourceCulture);
+                return Get("RegisterEmailNotConfirmedNote", resourceCulture);
             }
         }
 
@@ -515,7 +516,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RegisterEmailNote", resourceCulture);
+                return Get("RegisterEmailNote", resourceCulture);
             }
         }
 
@@ -523,7 +524,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RegisterText", resourceCulture);
+                return Get("RegisterText", resourceCulture);
             }
         }
 
@@ -531,7 +532,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RegisterTitle", resourceCulture);
+                return Get("RegisterTitle", resourceCulture);
             }
         }
 
@@ -539,7 +540,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ResetPassword_CannotReset", resourceCulture);
+                return Get("ResetPassword_CannotReset", resourceCulture);
             }
         }
 
@@ -561,7 +562,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Restore_Btn", resourceCulture);
+                return Get("Restore_Btn", resourceCulture);
             }
         }
 
@@ -569,7 +570,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Restore_ConfirmPassword", resourceCulture);
+                return Get("Restore_ConfirmPassword", resourceCulture);
             }
         }
 
@@ -577,7 +578,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Restore_Email_Register", resourceCulture);
+                return Get("Restore_Email_Register", resourceCulture);
             }
         }
 
@@ -585,7 +586,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Restore_MaimFormLink", resourceCulture);
+                return Get("Restore_MaimFormLink", resourceCulture);
             }
         }
 
@@ -593,7 +594,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Restore_Password", resourceCulture);
+                return Get("Restore_Password", resourceCulture);
             }
         }
 
@@ -601,7 +602,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Restore_Ph_ConfirmPassword", resourceCulture);
+                return Get("Restore_Ph_ConfirmPassword", resourceCulture);
             }
         }
 
@@ -609,7 +610,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Restore_Ph_Password", resourceCulture);
+                return Get("Restore_Ph_Password", resourceCulture);
             }
         }
 
@@ -617,7 +618,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Restore_SetPasswordButton", resourceCulture);
+                return Get("Restore_SetPasswordButton", resourceCulture);
             }
         }
 
@@ -625,7 +626,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RestoreChangedOK", resourceCulture);
+                return Get("RestoreChangedOK", resourceCulture);
             }
         }
 
@@ -633,7 +634,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RestorePasswordChangedError", resourceCulture);
+                return Get("RestorePasswordChangedError", resourceCulture);
             }
         }
 
@@ -641,7 +642,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RestoreText", resourceCulture);
+                return Get("RestoreText", resourceCulture);
             }
         }
 
@@ -649,7 +650,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RestoreTitle", resourceCulture);
+                return Get("RestoreTitle", resourceCulture);
             }
         }
     }

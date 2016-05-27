@@ -18,9 +18,8 @@
         public string BookingNote { get; set; }
 
         public string CustomerAddress { get; set; }
-
        
-        [Required(ErrorMessageResourceName="BookingModel_R_UserEmail", ErrorMessageResourceType=typeof(BookingStrings))]
+        [Required(ErrorMessageResourceName ="BookingModel_R_UserEmail", ErrorMessageResourceType=typeof(BookingStrings))]
         public string CustomerEmail { get; set; }
 
         [Required(ErrorMessageResourceName="BookingModel_R_CustomerMobile", ErrorMessageResourceType=typeof(BookingStrings))]

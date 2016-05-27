@@ -20,7 +20,7 @@
 
         private static Dictionary<string, Dictionary<string, string>> strings = new Dictionary<string, Dictionary<string, string>>();
 
-        public static string Get(string key)
+        public static string Get(string key, CultureInfo resourceCultureParam = null)
         {
             var str = UrlLanguage.CurrentLanguage;
 
@@ -43,7 +43,7 @@
             if (strings[str].ContainsKey(key))
                 return strings[str][key];
             
-            var tmp = BookingStrings.ResourceManager.GetString(key, BookingStrings.resourceCulture);
+            var tmp = BookingStrings.ResourceManager.GetString(key, resourceCultureParam != null ? resourceCultureParam:BookingStrings.resourceCulture);
 
             if (tmp == null)
                 return "not found " + key;
@@ -59,7 +59,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingAgreementCancel", resourceCulture);
+                return Get("BookingAgreementCancel", resourceCulture);
             }
         }
 
@@ -67,7 +67,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingAgreementConfirm", resourceCulture);
+                return Get("BookingAgreementConfirm", resourceCulture);
             }
         }
 
@@ -75,7 +75,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingAgreementConfirmMessage_1", resourceCulture);
+                return Get("BookingAgreementConfirmMessage_1", resourceCulture);
             }
         }
 
@@ -83,7 +83,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingAgreementConfirmMessage_2", resourceCulture);
+                return Get("BookingAgreementConfirmMessage_2", resourceCulture);
             }
         }
 
@@ -91,7 +91,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingAgreementTitle", resourceCulture);
+                return Get("BookingAgreementTitle", resourceCulture);
             }
         }
 
@@ -99,7 +99,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingErrorTitle", resourceCulture);
+                return Get("BookingErrorTitle", resourceCulture);
             }
         }
 
@@ -107,7 +107,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingFormAddress", resourceCulture);
+                return Get("BookingFormAddress", resourceCulture);
             }
         }
 
@@ -115,7 +115,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingFormMail", resourceCulture);
+                return Get("BookingFormMail", resourceCulture);
             }
         }
 
@@ -123,7 +123,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingFormName", resourceCulture);
+                return Get("BookingFormName", resourceCulture);
             }
         }
 
@@ -131,7 +131,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingFormNote", resourceCulture);
+                return Get("BookingFormNote", resourceCulture);
             }
         }
 
@@ -139,7 +139,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingFormPhone", resourceCulture);
+                return Get("BookingFormPhone", resourceCulture);
             }
         }
 
@@ -147,7 +147,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingInProcess", resourceCulture);
+                return Get("BookingInProcess", resourceCulture);
             }
         }
 
@@ -155,7 +155,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingMenuTitle", resourceCulture);
+                return Get("BookingMenuTitle", resourceCulture);
             }
         }
 
@@ -163,7 +163,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingModel_R_CustomerMobile", resourceCulture);
+                return Get("BookingModel_R_CustomerMobile", resourceCulture);
             }
         }
         public static string BookingModel_R_CustomerSecondNameReg
@@ -193,7 +193,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingModel_R_CustomerName", resourceCulture);
+                return Get("BookingModel_R_CustomerName", resourceCulture);
             }
         }
 
@@ -201,7 +201,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingModel_R_UserEmail", resourceCulture);
+                return Get("BookingModel_R_UserEmail", resourceCulture);
             }
         }
 
@@ -209,7 +209,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingPayButton", resourceCulture);
+                return Get("BookingPayButton", resourceCulture);
             }
         }
 
@@ -217,7 +217,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingProcessing_OrderTitle_1", resourceCulture);
+                return Get("BookingProcessing_OrderTitle_1", resourceCulture);
             }
         }
 
@@ -225,7 +225,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingProcessing_OrderTitle_2", resourceCulture);
+                return Get("BookingProcessing_OrderTitle_2", resourceCulture);
             }
         }
 
@@ -233,7 +233,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingProcessing_Title", resourceCulture);
+                return Get("BookingProcessing_Title", resourceCulture);
             }
         }
 
@@ -241,7 +241,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingResultText_1", resourceCulture);
+                return Get("BookingResultText_1", resourceCulture);
             }
         }
 
@@ -249,7 +249,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingResultText_2", resourceCulture);
+                return Get("BookingResultText_2", resourceCulture);
             }
         }
 
@@ -257,7 +257,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingResultTitle", resourceCulture);
+                return Get("BookingResultTitle", resourceCulture);
             }
         }
 
@@ -265,7 +265,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookingReturnToOrder", resourceCulture);
+                return Get("BookingReturnToOrder", resourceCulture);
             }
         }
 
@@ -273,7 +273,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookNowButton", resourceCulture);
+                return Get("BookNowButton", resourceCulture);
             }
         }
 
@@ -294,7 +294,7 @@
         {
             get
             {
-                return ResourceManager.GetString("EmptyCart_1", resourceCulture);
+                return Get("EmptyCart_1", resourceCulture);
             }
         }
 
@@ -302,7 +302,7 @@
         {
             get
             {
-                return ResourceManager.GetString("EmptyCart_2", resourceCulture);
+                return Get("EmptyCart_2", resourceCulture);
             }
         }
 
@@ -310,7 +310,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorMessageTitle", resourceCulture);
+                return Get("ErrorMessageTitle", resourceCulture);
             }
         }
 
@@ -318,7 +318,7 @@
         {
             get
             {
-                return ResourceManager.GetString("GoBack", resourceCulture);
+                return Get("GoBack", resourceCulture);
             }
         }
 
@@ -326,7 +326,7 @@
         {
             get
             {
-                return ResourceManager.GetString("GuestServiceTitle", resourceCulture);
+                return Get("GuestServiceTitle", resourceCulture);
             }
         }
 
@@ -334,7 +334,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderTotalLabel", resourceCulture);
+                return Get("OrderTotalLabel", resourceCulture);
             }
         }
 
@@ -342,7 +342,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Promo_ApplyCommand", resourceCulture);
+                return Get("Promo_ApplyCommand", resourceCulture);
             }
         }
 
@@ -350,7 +350,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Promo_ApplyLabel", resourceCulture);
+                return Get("Promo_ApplyLabel", resourceCulture);
             }
         }
 
@@ -358,7 +358,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Promo_FormButton", resourceCulture);
+                return Get("Promo_FormButton", resourceCulture);
             }
         }
 
@@ -366,7 +366,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Promo_FormLabel", resourceCulture);
+                return Get("Promo_FormLabel", resourceCulture);
             }
         }
 
@@ -374,7 +374,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Promo_FormTitle", resourceCulture);
+                return Get("Promo_FormTitle", resourceCulture);
             }
         }
 
@@ -382,7 +382,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RemoveOrderCancelButton", resourceCulture);
+                return Get("RemoveOrderCancelButton", resourceCulture);
             }
         }
 
@@ -390,7 +390,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RemoveOrderConfirmButton", resourceCulture);
+                return Get("RemoveOrderConfirmButton", resourceCulture);
             }
         }
 
@@ -398,7 +398,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RemoveOrderConfirmText", resourceCulture);
+                return Get("RemoveOrderConfirmText", resourceCulture);
             }
         }
 
@@ -406,7 +406,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RemoveOrderConfirmTitle", resourceCulture);
+                return Get("RemoveOrderConfirmTitle", resourceCulture);
             }
         }
 
@@ -414,7 +414,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RemoveOrderLink", resourceCulture);
+                return Get("RemoveOrderLink", resourceCulture);
             }
         }
 
@@ -436,7 +436,7 @@
         {
             get
             {
-                return ResourceManager.GetString("RulesAccepted", resourceCulture);
+                return Get("RulesAccepted", resourceCulture);
             }
         }
 
@@ -444,7 +444,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Title", resourceCulture);
+                return Get("Title", resourceCulture);
             }
         }
     }

@@ -32,6 +32,8 @@
         public int? pickuphotel { get; set; }
 
         public int? pickuppoint { get; set; }
+
+        public string pickuptime { get; set; }
     }
 }
 

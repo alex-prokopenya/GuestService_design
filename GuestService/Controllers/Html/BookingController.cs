@@ -328,6 +328,15 @@
             ReservationState reservation = controller.Calculate(bookingCartParam, bookingClaim);
             model.Prepare(form, reservation);
             model.PaymentModes = ApplyPaymentComissions(model.PaymentModes, model.Reservation.price);
+
+            for (int i = 0; i < bookingClaim.orders.Count; i++)
+            {
+                if ((bookingClaim.orders[i].excursion.pickuptime!= null) && (bookingClaim.orders[i].excursion.pickuptime.Length > 5))
+                    model.Reservation.orders[i].excursion.pickuptime =  Convert.ToDateTime(bookingClaim.orders[i].excursion.pickuptime).ToString("HH:mm");
+                else
+                    model.Reservation.orders[i].excursion.pickuptime = bookingClaim.orders[i].excursion.pickuptime;
+            }
+
             return base.View(model);
         }
 

@@ -20,7 +20,7 @@
 
         private static Dictionary<string, Dictionary<string, string>> strings = new Dictionary<string, Dictionary<string, string>>();
 
-        public static string Get(string key)
+        public static string Get(string key, CultureInfo resourceCultureParam = null)
         {
             var str = UrlLanguage.CurrentLanguage;
 
@@ -43,7 +43,7 @@
             if (strings[str].ContainsKey(key))
                 return strings[str][key];
 
-            return GuestStrings.ResourceManager.GetString(key, GuestStrings.resourceCulture);
+            return GuestStrings.ResourceManager.GetString(key, resourceCultureParam != null ? resourceCultureParam : GuestStrings.resourceCulture);
         }
 
         internal GuestStrings()
@@ -54,7 +54,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Authenticate_1", resourceCulture);
+                return Get("Authenticate_1", resourceCulture);
             }
         }
 
@@ -62,7 +62,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Authenticate_2", resourceCulture);
+                return Get("Authenticate_2", resourceCulture);
             }
         }
 
@@ -70,7 +70,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Authenticate_3", resourceCulture);
+                return Get("Authenticate_3", resourceCulture);
             }
         }
 
@@ -91,7 +91,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DepartureBack", resourceCulture);
+                return Get("DepartureBack", resourceCulture);
             }
         }
 
@@ -99,7 +99,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DepartureNotFound", resourceCulture);
+                return Get("DepartureNotFound", resourceCulture);
             }
         }
 
@@ -107,7 +107,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DepartureNotFoundNote_1", resourceCulture);
+                return Get("DepartureNotFoundNote_1", resourceCulture);
             }
         }
 
@@ -115,7 +115,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DepartureNotFoundNote_2", resourceCulture);
+                return Get("DepartureNotFoundNote_2", resourceCulture);
             }
         }
 
@@ -123,7 +123,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DepartureNoTransferFound", resourceCulture);
+                return Get("DepartureNoTransferFound", resourceCulture);
             }
         }
 
@@ -131,7 +131,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DepartureTitle", resourceCulture);
+                return Get("DepartureTitle", resourceCulture);
             }
         }
 
@@ -139,7 +139,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderChoose_1", resourceCulture);
+                return Get("FindOrderChoose_1", resourceCulture);
             }
         }
 
@@ -147,7 +147,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderChoose_2", resourceCulture);
+                return Get("FindOrderChoose_2", resourceCulture);
             }
         }
 
@@ -155,7 +155,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderClaim", resourceCulture);
+                return Get("FindOrderClaim", resourceCulture);
             }
         }
 
@@ -163,7 +163,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderDeleteButton", resourceCulture);
+                return Get("FindOrderDeleteButton", resourceCulture);
             }
         }
 
@@ -171,7 +171,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderFindButton", resourceCulture);
+                return Get("FindOrderFindButton", resourceCulture);
             }
         }
 
@@ -179,7 +179,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderFound", resourceCulture);
+                return Get("FindOrderFound", resourceCulture);
             }
         }
 
@@ -187,7 +187,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderKnow_1", resourceCulture);
+                return Get("FindOrderKnow_1", resourceCulture);
             }
         }
 
@@ -195,7 +195,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderKnow_2", resourceCulture);
+                return Get("FindOrderKnow_2", resourceCulture);
             }
         }
 
@@ -203,7 +203,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderLinkOrderButton", resourceCulture);
+                return Get("FindOrderLinkOrderButton", resourceCulture);
             }
         }
 
@@ -211,7 +211,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderModel_D_Claim", resourceCulture);
+                return Get("FindOrderModel_D_Claim", resourceCulture);
             }
         }
 
@@ -219,7 +219,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderModel_N_Claim", resourceCulture);
+                return Get("FindOrderModel_N_Claim", resourceCulture);
             }
         }
 
@@ -227,7 +227,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderModel_N_ClaimName", resourceCulture);
+                return Get("FindOrderModel_N_ClaimName", resourceCulture);
             }
         }
 
@@ -235,7 +235,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderModel_N_Passport", resourceCulture);
+                return Get("FindOrderModel_N_Passport", resourceCulture);
             }
         }
 
@@ -243,7 +243,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderModel_R_Claim", resourceCulture);
+                return Get("FindOrderModel_R_Claim", resourceCulture);
             }
         }
 
@@ -251,7 +251,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderModel_R_ClaimName", resourceCulture);
+                return Get("FindOrderModel_R_ClaimName", resourceCulture);
             }
         }
 
@@ -259,7 +259,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderModel_R_Passport", resourceCulture);
+                return Get("FindOrderModel_R_Passport", resourceCulture);
             }
         }
 
@@ -267,7 +267,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderName", resourceCulture);
+                return Get("FindOrderName", resourceCulture);
             }
         }
 
@@ -275,7 +275,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderNameSmall", resourceCulture);
+                return Get("FindOrderNameSmall", resourceCulture);
             }
         }
 
@@ -283,7 +283,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderNoLinkedOrders", resourceCulture);
+                return Get("FindOrderNoLinkedOrders", resourceCulture);
             }
         }
 
@@ -291,7 +291,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderNotFound", resourceCulture);
+                return Get("FindOrderNotFound", resourceCulture);
             }
         }
 
@@ -299,7 +299,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderOrderTitle", resourceCulture);
+                return Get("FindOrderOrderTitle", resourceCulture);
             }
         }
 
@@ -307,7 +307,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderPassSer", resourceCulture);
+                return Get("FindOrderPassSer", resourceCulture);
             }
         }
 
@@ -315,7 +315,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FindOrderTitle", resourceCulture);
+                return Get("FindOrderTitle", resourceCulture);
             }
         }
 
@@ -323,7 +323,7 @@
         {
             get
             {
-                return ResourceManager.GetString("GuestServicesExcursionDepartureTitle", resourceCulture);
+                return Get("GuestServicesExcursionDepartureTitle", resourceCulture);
             }
         }
 
@@ -331,7 +331,7 @@
         {
             get
             {
-                return ResourceManager.GetString("GuestServicesFindOrder_1", resourceCulture);
+                return Get("GuestServicesFindOrder_1", resourceCulture);
             }
         }
 
@@ -339,7 +339,7 @@
         {
             get
             {
-                return ResourceManager.GetString("GuestServicesFindOrder_2", resourceCulture);
+                return Get("GuestServicesFindOrder_2", resourceCulture);
             }
         }
 
@@ -347,7 +347,7 @@
         {
             get
             {
-                return ResourceManager.GetString("GuestServicesFindOrder_3", resourceCulture);
+                return Get("GuestServicesFindOrder_3", resourceCulture);
             }
         }
 
@@ -355,7 +355,7 @@
         {
             get
             {
-                return ResourceManager.GetString("GuestServicesLink", resourceCulture);
+                return Get("GuestServicesLink", resourceCulture);
             }
         }
 
@@ -363,7 +363,7 @@
         {
             get
             {
-                return ResourceManager.GetString("GuestServicesTitle", resourceCulture);
+                return Get("GuestServicesTitle", resourceCulture);
             }
         }
 
@@ -371,7 +371,7 @@
         {
             get
             {
-                return ResourceManager.GetString("GuestServiceTitle", resourceCulture);
+                return Get("GuestServiceTitle", resourceCulture);
             }
         }
 
@@ -379,7 +379,7 @@
         {
             get
             {
-                return ResourceManager.GetString("HotelAlt", resourceCulture);
+                return Get("HotelAlt", resourceCulture);
             }
         }
 
@@ -387,7 +387,7 @@
         {
             get
             {
-                return ResourceManager.GetString("HotelDepartureNoInformation", resourceCulture);
+                return Get("HotelDepartureNoInformation", resourceCulture);
             }
         }
 
@@ -395,7 +395,7 @@
         {
             get
             {
-                return ResourceManager.GetString("HotelDepartureTitle", resourceCulture);
+                return Get("HotelDepartureTitle", resourceCulture);
             }
         }
 
@@ -403,7 +403,7 @@
         {
             get
             {
-                return ResourceManager.GetString("HotelNotFound", resourceCulture);
+                return Get("HotelNotFound", resourceCulture);
             }
         }
 
@@ -411,7 +411,7 @@
         {
             get
             {
-                return ResourceManager.GetString("HotelNotFound_1", resourceCulture);
+                return Get("HotelNotFound_1", resourceCulture);
             }
         }
 
@@ -419,7 +419,7 @@
         {
             get
             {
-                return ResourceManager.GetString("HotelNotFound_Link", resourceCulture);
+                return Get("HotelNotFound_Link", resourceCulture);
             }
         }
 
@@ -427,7 +427,7 @@
         {
             get
             {
-                return ResourceManager.GetString("HotelTitle", resourceCulture);
+                return Get("HotelTitle", resourceCulture);
             }
         }
 
@@ -435,7 +435,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuBookingAlt", resourceCulture);
+                return Get("MenuBookingAlt", resourceCulture);
             }
         }
 
@@ -443,7 +443,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuBookingText", resourceCulture);
+                return Get("MenuBookingText", resourceCulture);
             }
         }
 
@@ -451,7 +451,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuBookingTitle", resourceCulture);
+                return Get("MenuBookingTitle", resourceCulture);
             }
         }
 
@@ -459,7 +459,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuDepartureAlt", resourceCulture);
+                return Get("MenuDepartureAlt", resourceCulture);
             }
         }
 
@@ -467,7 +467,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuDepartureText", resourceCulture);
+                return Get("MenuDepartureText", resourceCulture);
             }
         }
 
@@ -475,7 +475,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuDepartureTitle", resourceCulture);
+                return Get("MenuDepartureTitle", resourceCulture);
             }
         }
 
@@ -483,7 +483,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuExcursionAlt", resourceCulture);
+                return Get("MenuExcursionAlt", resourceCulture);
             }
         }
 
@@ -491,7 +491,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuExcursionText", resourceCulture);
+                return Get("MenuExcursionText", resourceCulture);
             }
         }
 
@@ -499,7 +499,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuExcursionTitle", resourceCulture);
+                return Get("MenuExcursionTitle", resourceCulture);
             }
         }
 
@@ -507,7 +507,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuInformationAlt", resourceCulture);
+                return Get("MenuInformationAlt", resourceCulture);
             }
         }
 
@@ -515,7 +515,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuInformationText", resourceCulture);
+                return Get("MenuInformationText", resourceCulture);
             }
         }
 
@@ -523,7 +523,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuInformationTitle", resourceCulture);
+                return Get("MenuInformationTitle", resourceCulture);
             }
         }
 
@@ -531,7 +531,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuOrdersAlt", resourceCulture);
+                return Get("MenuOrdersAlt", resourceCulture);
             }
         }
 
@@ -539,7 +539,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuOrdersText", resourceCulture);
+                return Get("MenuOrdersText", resourceCulture);
             }
         }
 
@@ -547,7 +547,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MenuOrdersTitle", resourceCulture);
+                return Get("MenuOrdersTitle", resourceCulture);
             }
         }
 
@@ -555,7 +555,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MoreOrderAlt", resourceCulture);
+                return Get("MoreOrderAlt", resourceCulture);
             }
         }
 
@@ -563,7 +563,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MoreOrdersFindButton", resourceCulture);
+                return Get("MoreOrdersFindButton", resourceCulture);
             }
         }
 
@@ -571,7 +571,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MoreOrdersInstruction", resourceCulture);
+                return Get("MoreOrdersInstruction", resourceCulture);
             }
         }
 
@@ -579,7 +579,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MoreOrdersListOrderAlt", resourceCulture);
+                return Get("MoreOrdersListOrderAlt", resourceCulture);
             }
         }
 
@@ -587,7 +587,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MoreOrderTitle", resourceCulture);
+                return Get("MoreOrderTitle", resourceCulture);
             }
         }
 
@@ -595,7 +595,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderDoPaymentButton", resourceCulture);
+                return Get("OrderDoPaymentButton", resourceCulture);
             }
         }
 
@@ -603,7 +603,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderInfoTitle", resourceCulture);
+                return Get("OrderInfoTitle", resourceCulture);
             }
         }
 
@@ -611,7 +611,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderToPay", resourceCulture);
+                return Get("OrderToPay", resourceCulture);
             }
         }
 
@@ -619,7 +619,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderTotal", resourceCulture);
+                return Get("OrderTotal", resourceCulture);
             }
         }
 
@@ -627,7 +627,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderBuildVoucherButton", resourceCulture);
+                return Get("PrintOrderBuildVoucherButton", resourceCulture);
             }
         }
 
@@ -635,7 +635,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderConfirmCaption", resourceCulture);
+                return Get("PrintOrderConfirmCaption", resourceCulture);
             }
         }
 
@@ -643,7 +643,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderModel_Claim", resourceCulture);
+                return Get("PrintOrderModel_Claim", resourceCulture);
             }
         }
 
@@ -651,7 +651,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderModel_D_Claim", resourceCulture);
+                return Get("PrintOrderModel_D_Claim", resourceCulture);
             }
         }
 
@@ -659,7 +659,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderModel_N_Claim", resourceCulture);
+                return Get("PrintOrderModel_N_Claim", resourceCulture);
             }
         }
 
@@ -667,7 +667,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderModel_N_Name", resourceCulture);
+                return Get("PrintOrderModel_N_Name", resourceCulture);
             }
         }
 
@@ -675,7 +675,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderModel_Name_1", resourceCulture);
+                return Get("PrintOrderModel_Name_1", resourceCulture);
             }
         }
 
@@ -683,7 +683,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderModel_Name_2", resourceCulture);
+                return Get("PrintOrderModel_Name_2", resourceCulture);
             }
         }
 
@@ -691,7 +691,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderModel_R_Claim", resourceCulture);
+                return Get("PrintOrderModel_R_Claim", resourceCulture);
             }
         }
 
@@ -699,7 +699,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderModel_R_Name", resourceCulture);
+                return Get("PrintOrderModel_R_Name", resourceCulture);
             }
         }
 
@@ -707,7 +707,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderNotFound", resourceCulture);
+                return Get("PrintOrderNotFound", resourceCulture);
             }
         }
 
@@ -715,7 +715,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintOrderTitle", resourceCulture);
+                return Get("PrintOrderTitle", resourceCulture);
             }
         }
 
@@ -723,7 +723,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PrintVoucherButton", resourceCulture);
+                return Get("PrintVoucherButton", resourceCulture);
             }
         }
 
@@ -745,7 +745,7 @@
         {
             get
             {
-                return ResourceManager.GetString("String1", resourceCulture);
+                return Get("String1", resourceCulture);
             }
         }
 
@@ -753,7 +753,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SummaryCheckAnother", resourceCulture);
+                return Get("SummaryCheckAnother", resourceCulture);
             }
         }
 
@@ -761,7 +761,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SummaryFindButton", resourceCulture);
+                return Get("SummaryFindButton", resourceCulture);
             }
         }
 
@@ -769,7 +769,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SummaryFindReservationTitle", resourceCulture);
+                return Get("SummaryFindReservationTitle", resourceCulture);
             }
         }
 
@@ -777,7 +777,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SummaryNameLabel", resourceCulture);
+                return Get("SummaryNameLabel", resourceCulture);
             }
         }
 
@@ -785,7 +785,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SummaryNameLabel_1", resourceCulture);
+                return Get("SummaryNameLabel_1", resourceCulture);
             }
         }
 
@@ -793,7 +793,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SummaryNotFound", resourceCulture);
+                return Get("SummaryNotFound", resourceCulture);
             }
         }
 
@@ -801,7 +801,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SummaryReservationLabel", resourceCulture);
+                return Get("SummaryReservationLabel", resourceCulture);
             }
         }
     }

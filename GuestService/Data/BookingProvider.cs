@@ -756,7 +756,6 @@ namespace GuestService.Data
             if (lang == "ru")
                 name = "name";
 
-
             if (hotel > 0)
             {
                 res = DatabaseOperationProvider.Query("select a.picktime, b." + name + " as pickup, c." + name + " as hotel from exhoteltime as a, _pickup as b, hotel as c where excurs = @exId and a.hotel=c.inc and a.hotel=@hotelId and a._pickup = b.inc", "services", new { hotelId = hotel, exId = id });
@@ -864,7 +863,6 @@ namespace GuestService.Data
                     partpass = partnerPassId
                 });
 
-
                 ReservationState result = (
                     from DataRow row in ds.Tables["state"].Rows
                     select BookingProvider.factory.ReservationState(row)).FirstOrDefault<ReservationState>();
@@ -912,6 +910,26 @@ namespace GuestService.Data
                     }
                 }
 
+                if ((action == "save") || (action == "status"))
+                {
+                    foreach (var order in result.orders)
+                    {
+                        if (order.excursion != null)
+                        {
+                            int realOrderId = GetRealOrderId(result.claimId.Value,
+                                                            order.datefrom,
+                                                            order.excursion.id,
+                                                            order.excursion.pickuppoint,
+                                                            order.excursion.time,
+                                                            order.partner.id);
+
+
+                            if (realOrderId > 0)
+                                order.excursion.pickuptime = GetExcursionPickupTime(realOrderId);
+                        }
+                    }
+                }
+
                 //привязываем путевку к аккаунту
                 if (action == "save")
                 {
@@ -936,22 +954,7 @@ namespace GuestService.Data
                     { }
 
                     //pickuptime = GetExcursionPickupTime(result.id)
-                    foreach (var order in result.orders)
-                    {
-                        if (order.excursion != null)
-                        {
-                            int realOrderId = GetRealOrderId(result.claimId.Value,
-                                                            order.datefrom,
-                                                            order.excursion.id,
-                                                            order.excursion.pickuppoint,
-                                                            order.excursion.time,
-                                                            order.partner.id);
-
-
-                            if (realOrderId > 0)
-                                order.excursion.pickuptime = GetExcursionPickupTime(realOrderId);
-                        }
-                    }
+                  
 
                     //делаем отбивку
                     Task[] tasks = new Task[]

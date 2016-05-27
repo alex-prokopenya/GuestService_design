@@ -20,7 +20,7 @@
 
         private static Dictionary<string, Dictionary<string, string>> strings = new Dictionary<string, Dictionary<string, string>>();
 
-        public static string Get(string key)
+        public static string Get(string key, CultureInfo resourceCultureParam = null)
         {
             var str = UrlLanguage.CurrentLanguage;
 
@@ -43,7 +43,7 @@
             if (strings[str].ContainsKey(key))
                 return strings[str][key];
 
-            return ExcursionStrings.ResourceManager.GetString(key, ExcursionStrings.resourceCulture);
+            return ExcursionStrings.ResourceManager.GetString(key, resourceCultureParam != null ? resourceCultureParam : ExcursionStrings.resourceCulture);
         }
 
         internal ExcursionStrings()
@@ -54,7 +54,7 @@
         {
             get
             {
-                return ResourceManager.GetString("AddReviewLink", resourceCulture);
+                return Get("AddReviewLink", resourceCulture);
             }
         }
 
@@ -62,7 +62,7 @@
         {
             get
             {
-                return ResourceManager.GetString("AddReviewNo", resourceCulture);
+                return Get("AddReviewNo", resourceCulture);
             }
         }
 
@@ -70,7 +70,7 @@
         {
             get
             {
-                return ResourceManager.GetString("AddReviewText", resourceCulture);
+                return Get("AddReviewText", resourceCulture);
             }
         }
 
@@ -78,7 +78,7 @@
         {
             get
             {
-                return ResourceManager.GetString("AddReviewTitle", resourceCulture);
+                return Get("AddReviewTitle", resourceCulture);
             }
         }
 
@@ -86,7 +86,7 @@
         {
             get
             {
-                return ResourceManager.GetString("AddReviewYes", resourceCulture);
+                return Get("AddReviewYes", resourceCulture);
             }
         }
 
@@ -94,7 +94,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookButton", resourceCulture);
+                return Get("BookButton", resourceCulture);
             }
         }
 
@@ -102,7 +102,7 @@
         {
             get
             {
-                return ResourceManager.GetString("BookNowButton", resourceCulture);
+                return Get("BookNowButton", resourceCulture);
             }
         }
 
@@ -123,7 +123,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DateTimeFormat", resourceCulture);
+                return Get("DateTimeFormat", resourceCulture);
             }
         }
 
@@ -131,7 +131,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DateTimeLanguage", resourceCulture);
+                return Get("DateTimeLanguage", resourceCulture);
             }
         }
 
@@ -139,7 +139,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DeatilGroupSize", resourceCulture);
+                return Get("DeatilGroupSize", resourceCulture);
             }
         }
 
@@ -147,7 +147,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DepartureLabel", resourceCulture);
+                return Get("DepartureLabel", resourceCulture);
             }
         }
 
@@ -155,7 +155,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DescriptionInfo_Categories", resourceCulture);
+                return Get("DescriptionInfo_Categories", resourceCulture);
             }
         }
 
@@ -163,7 +163,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DescriptionInfo_Direction", resourceCulture);
+                return Get("DescriptionInfo_Direction", resourceCulture);
             }
         }
 
@@ -171,7 +171,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DescriptionInfo_Duration", resourceCulture);
+                return Get("DescriptionInfo_Duration", resourceCulture);
             }
         }
 
@@ -179,7 +179,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DescriptionInfo_Language", resourceCulture);
+                return Get("DescriptionInfo_Language", resourceCulture);
             }
         }
 
@@ -187,7 +187,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DescriptionInfo_Partner", resourceCulture);
+                return Get("DescriptionInfo_Partner", resourceCulture);
             }
         }
 
@@ -195,7 +195,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailAdult", resourceCulture);
+                return Get("DetailAdult", resourceCulture);
             }
         }
 
@@ -203,7 +203,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailChild", resourceCulture);
+                return Get("DetailChild", resourceCulture);
             }
         }
 
@@ -211,7 +211,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailDateTitle", resourceCulture);
+                return Get("DetailDateTitle", resourceCulture);
             }
         }
 
@@ -219,7 +219,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailDeparture", resourceCulture);
+                return Get("DetailDeparture", resourceCulture);
             }
         }
 
@@ -227,7 +227,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailDescription", resourceCulture);
+                return Get("DetailDescription", resourceCulture);
             }
         }
 
@@ -235,7 +235,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailExcursionDateTitle", resourceCulture);
+                return Get("DetailExcursionDateTitle", resourceCulture);
             }
         }
 
@@ -243,7 +243,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailInfant", resourceCulture);
+                return Get("DetailInfant", resourceCulture);
             }
         }
 
@@ -251,7 +251,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailMapExpand", resourceCulture);
+                return Get("DetailMapExpand", resourceCulture);
             }
         }
 
@@ -259,7 +259,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailOnsaleTill", resourceCulture);
+                return Get("DetailOnsaleTill", resourceCulture);
             }
         }
 
@@ -267,7 +267,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailPrice", resourceCulture);
+                return Get("DetailPrice", resourceCulture);
             }
         }
 
@@ -275,7 +275,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailPriceTitle", resourceCulture);
+                return Get("DetailPriceTitle", resourceCulture);
             }
         }
 
@@ -283,7 +283,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailReturnToExcursionDate", resourceCulture);
+                return Get("DetailReturnToExcursionDate", resourceCulture);
             }
         }
 
@@ -291,7 +291,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailReturnToExcursionList", resourceCulture);
+                return Get("DetailReturnToExcursionList", resourceCulture);
             }
         }
 
@@ -299,7 +299,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailSelectedDateTitle", resourceCulture);
+                return Get("DetailSelectedDateTitle", resourceCulture);
             }
         }
 
@@ -307,7 +307,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DetailServicePrice", resourceCulture);
+                return Get("DetailServicePrice", resourceCulture);
             }
         }
 
@@ -315,7 +315,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DurationAlt", resourceCulture);
+                return Get("DurationAlt", resourceCulture);
             }
         }
 
@@ -323,7 +323,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DurationDay", resourceCulture);
+                return Get("DurationDay", resourceCulture);
             }
         }
 
@@ -331,7 +331,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DurationDays", resourceCulture);
+                return Get("DurationDays", resourceCulture);
             }
         }
 
@@ -339,7 +339,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DurationHour", resourceCulture);
+                return Get("DurationHour", resourceCulture);
             }
         }
 
@@ -347,7 +347,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DurationHours", resourceCulture);
+                return Get("DurationHours", resourceCulture);
             }
         }
 
@@ -355,7 +355,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DurationMin", resourceCulture);
+                return Get("DurationMin", resourceCulture);
             }
         }
 
@@ -363,7 +363,7 @@
         {
             get
             {
-                return ResourceManager.GetString("DurationMins", resourceCulture);
+                return Get("DurationMins", resourceCulture);
             }
         }
 
@@ -371,7 +371,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorGuestCount", resourceCulture);
+                return Get("ErrorGuestCount", resourceCulture);
             }
         }
 
@@ -379,7 +379,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorInvalidParams", resourceCulture);
+                return Get("ErrorInvalidParams", resourceCulture);
             }
         }
 
@@ -387,7 +387,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ErrorSummary", resourceCulture);
+                return Get("ErrorSummary", resourceCulture);
             }
         }
 
@@ -395,7 +395,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExcursionLanguage", resourceCulture);
+                return Get("ExcursionLanguage", resourceCulture);
             }
         }
 
@@ -403,7 +403,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExcursionMapMarkerDeparture", resourceCulture);
+                return Get("ExcursionMapMarkerDeparture", resourceCulture);
             }
         }
 
@@ -411,7 +411,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExcursionMapMarkerLocation", resourceCulture);
+                return Get("ExcursionMapMarkerLocation", resourceCulture);
             }
         }
 
@@ -419,7 +419,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExcursionNotFound", resourceCulture);
+                return Get("ExcursionNotFound", resourceCulture);
             }
         }
 
@@ -427,7 +427,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExcursionRegionTitle", resourceCulture);
+                return Get("ExcursionRegionTitle", resourceCulture);
             }
         }
 
@@ -435,7 +435,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExcursionReviewCountTitle", resourceCulture);
+                return Get("ExcursionReviewCountTitle", resourceCulture);
             }
         }
 
@@ -443,7 +443,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExcursionReviewNote1", resourceCulture);
+                return Get("ExcursionReviewNote1", resourceCulture);
             }
         }
 
@@ -451,7 +451,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExcursionReviewNote2", resourceCulture);
+                return Get("ExcursionReviewNote2", resourceCulture);
             }
         }
 
@@ -459,7 +459,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExcursionReviewTitle", resourceCulture);
+                return Get("ExcursionReviewTitle", resourceCulture);
             }
         }
 
@@ -467,7 +467,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExcursionTitle", resourceCulture);
+                return Get("ExcursionTitle", resourceCulture);
             }
         }
 
@@ -475,7 +475,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExtraFilters", resourceCulture);
+                return Get("ExtraFilters", resourceCulture);
             }
         }
 
@@ -483,7 +483,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExtraFiltersAllDates", resourceCulture);
+                return Get("ExtraFiltersAllDates", resourceCulture);
             }
         }
 
@@ -491,7 +491,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExtraFiltersCategory", resourceCulture);
+                return Get("ExtraFiltersCategory", resourceCulture);
             }
         }
 
@@ -499,7 +499,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExtraFiltersDate", resourceCulture);
+                return Get("ExtraFiltersDate", resourceCulture);
             }
         }
 
@@ -507,7 +507,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExtraFiltersDepartures", resourceCulture);
+                return Get("ExtraFiltersDepartures", resourceCulture);
             }
         }
 
@@ -515,7 +515,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExtraFiltersDirection", resourceCulture);
+                return Get("ExtraFiltersDirection", resourceCulture);
             }
         }
 
@@ -523,7 +523,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ExtraFiltersLanguage", resourceCulture);
+                return Get("ExtraFiltersLanguage", resourceCulture);
             }
         }
 
@@ -531,7 +531,7 @@
         {
             get
             {
-                return ResourceManager.GetString("FreeSeatsLabel", resourceCulture);
+                return Get("FreeSeatsLabel", resourceCulture);
             }
         }
 
@@ -539,7 +539,7 @@
         {
             get
             {
-                return ResourceManager.GetString("GeorgaphyTitle", resourceCulture);
+                return Get("GeorgaphyTitle", resourceCulture);
             }
         }
 
@@ -547,7 +547,7 @@
         {
             get
             {
-                return ResourceManager.GetString("GuestServiceTitle", resourceCulture);
+                return Get("GuestServiceTitle", resourceCulture);
             }
         }
 
@@ -555,7 +555,7 @@
         {
             get
             {
-                return ResourceManager.GetString("HelpPlease", resourceCulture);
+                return Get("HelpPlease", resourceCulture);
             }
         }
 
@@ -563,7 +563,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MapHideLink", resourceCulture);
+                return Get("MapHideLink", resourceCulture);
             }
         }
 
@@ -571,7 +571,7 @@
         {
             get
             {
-                return ResourceManager.GetString("MapShowLink", resourceCulture);
+                return Get("MapShowLink", resourceCulture);
             }
         }
 
@@ -579,7 +579,7 @@
         {
             get
             {
-                return ResourceManager.GetString("NavigateCategory", resourceCulture);
+                return Get("NavigateCategory", resourceCulture);
             }
         }
 
@@ -587,7 +587,7 @@
         {
             get
             {
-                return ResourceManager.GetString("NavigateExcursions", resourceCulture);
+                return Get("NavigateExcursions", resourceCulture);
             }
         }
 
@@ -595,7 +595,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderAddShopCartButton", resourceCulture);
+                return Get("OrderAddShopCartButton", resourceCulture);
             }
         }
 
@@ -603,7 +603,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderAddShopCartSuccess", resourceCulture);
+                return Get("OrderAddShopCartSuccess", resourceCulture);
             }
         }
 
@@ -611,7 +611,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderAdult", resourceCulture);
+                return Get("OrderAdult", resourceCulture);
             }
         }
 
@@ -619,7 +619,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderChild", resourceCulture);
+                return Get("OrderChild", resourceCulture);
             }
         }
 
@@ -627,7 +627,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderCloseButton", resourceCulture);
+                return Get("OrderCloseButton", resourceCulture);
             }
         }
 
@@ -635,7 +635,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderCount", resourceCulture);
+                return Get("OrderCount", resourceCulture);
             }
         }
 
@@ -643,7 +643,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderFormHelp", resourceCulture);
+                return Get("OrderFormHelp", resourceCulture);
             }
         }
 
@@ -651,7 +651,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderGoShoppingCart", resourceCulture);
+                return Get("OrderGoShoppingCart", resourceCulture);
             }
         }
 
@@ -659,7 +659,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderInfant", resourceCulture);
+                return Get("OrderInfant", resourceCulture);
             }
         }
 
@@ -667,7 +667,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderName", resourceCulture);
+                return Get("OrderName", resourceCulture);
             }
         }
 
@@ -675,7 +675,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderNote", resourceCulture);
+                return Get("OrderNote", resourceCulture);
             }
         }
 
@@ -683,7 +683,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderPhone", resourceCulture);
+                return Get("OrderPhone", resourceCulture);
             }
         }
 
@@ -691,7 +691,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderPickUp", resourceCulture);
+                return Get("OrderPickUp", resourceCulture);
             }
         }
 
@@ -699,7 +699,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderPickupHotel", resourceCulture);
+                return Get("OrderPickupHotel", resourceCulture);
             }
         }
 
@@ -707,7 +707,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderPriceForPax", resourceCulture);
+                return Get("OrderPriceForPax", resourceCulture);
             }
         }
 
@@ -715,7 +715,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderPriceForService", resourceCulture);
+                return Get("OrderPriceForService", resourceCulture);
             }
         }
 
@@ -723,7 +723,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderReturnExcursionList", resourceCulture);
+                return Get("OrderReturnExcursionList", resourceCulture);
             }
         }
 
@@ -731,7 +731,7 @@
         {
             get
             {
-                return ResourceManager.GetString("OrderTitle", resourceCulture);
+                return Get("OrderTitle", resourceCulture);
             }
         }
 
@@ -739,7 +739,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PartnerAlt", resourceCulture);
+                return Get("PartnerAlt", resourceCulture);
             }
         }
 
@@ -747,7 +747,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PickupHotelHint", resourceCulture);
+                return Get("PickupHotelHint", resourceCulture);
             }
         }
 
@@ -755,7 +755,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PriceByPax", resourceCulture);
+                return Get("PriceByPax", resourceCulture);
             }
         }
 
@@ -763,7 +763,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PriceByService", resourceCulture);
+                return Get("PriceByService", resourceCulture);
             }
         }
 
@@ -771,7 +771,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PriceFrom", resourceCulture);
+                return Get("PriceFrom", resourceCulture);
             }
         }
 
@@ -779,7 +779,7 @@
         {
             get
             {
-                return ResourceManager.GetString("PriceNotFound", resourceCulture);
+                return Get("PriceNotFound", resourceCulture);
             }
         }
 
@@ -801,7 +801,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ReviewHintNegative", resourceCulture);
+                return Get("ReviewHintNegative", resourceCulture);
             }
         }
 
@@ -809,7 +809,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ReviewHintPositive", resourceCulture);
+                return Get("ReviewHintPositive", resourceCulture);
             }
         }
 
@@ -817,7 +817,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ReviewNoRanking", resourceCulture);
+                return Get("ReviewNoRanking", resourceCulture);
             }
         }
 
@@ -825,7 +825,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ReviewTitle", resourceCulture);
+                return Get("ReviewTitle", resourceCulture);
             }
         }
 
@@ -833,7 +833,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SearchDeparture_AnyPoint", resourceCulture);
+                return Get("SearchDeparture_AnyPoint", resourceCulture);
             }
         }
 
@@ -841,7 +841,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SearchPlaceholder", resourceCulture);
+                return Get("SearchPlaceholder", resourceCulture);
             }
         }
 
@@ -849,7 +849,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SearchTitle", resourceCulture);
+                return Get("SearchTitle", resourceCulture);
             }
         }
 
@@ -857,7 +857,7 @@
         {
             get
             {
-                return ResourceManager.GetString("ShowMap", resourceCulture);
+                return Get("ShowMap", resourceCulture);
             }
         }
 
@@ -865,7 +865,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SortOrderByName", resourceCulture);
+                return Get("SortOrderByName", resourceCulture);
             }
         }
 
@@ -873,7 +873,7 @@
         {
             get
             {
-                return ResourceManager.GetString("SortOrderByPrice", resourceCulture);
+                return Get("SortOrderByPrice", resourceCulture);
             }
         }
 
@@ -881,7 +881,7 @@
         {
             get
             {
-                return ResourceManager.GetString("Title", resourceCulture);
+                return Get("Title", resourceCulture);
             }
         }
     }

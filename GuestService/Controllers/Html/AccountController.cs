@@ -391,7 +391,7 @@
             {
                 new SimpleEmailService().SendEmail<AccountConfirmationTemplate>(userName,
                                                                 "send_registration_confirm",
-                                                                "en",
+                                                                UrlLanguage.CurrentLanguage,
                                                                 new AccountConfirmationTemplate()
                                                                 {
                                                                     Role = role,
@@ -401,11 +401,24 @@
             }
             else if (action == ConfirmMailOperation.recovery)
             {
+                new SimpleEmailService().SendEmail<AccountConfirmationTemplate>(userName,
+                                                             "send_registration_resetpassword",
+                                                             UrlLanguage.CurrentLanguage,
+                                                             new AccountConfirmationTemplate()
+                                                             {
+                                                                 Role = role,
+                                                                 Token = confirmationToken,
+                                                                 ConfirmUrl = new Uri(base.Request.BaseServerAddress(), base.Url.Action("resetpassword", new { token = confirmationToken })).ToString()
+                                                             });
+            }
+
+            /*
+            else if (action == ConfirmMailOperation.recovery)
+            {
                 string content = new Uri(base.Request.BaseServerAddress(), base.Url.Action("resetpassword", new { token = confirmationToken })).ToString();
                 UserToolsProvider.UmgRaiseMessage(UrlLanguage.CurrentLanguage, "Guest Service Registration", userName, "GS_REGCONFIRM", new XElement("guestServiceRegistration", new object[] { new XAttribute("action", action.ToString()), new XElement("confirmUrl", content), new XElement("email", userName) }).ToString());
             }
 
-            /*
             if (string.IsNullOrEmpty(userName))
             {
                 throw new ArgumentNullException("userName");
