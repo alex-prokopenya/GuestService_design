@@ -35,8 +35,10 @@
                 ReservationState claim = BookingProvider.GetReservationState(UrlLanguage.CurrentLanguage, param.claimId);
 
                 var customer = claim.customer;
-                /*
-                new SimpleEmailService().SendEmail<CancellationMessageTemplate>(Settings.EmailForCancellation,
+
+                try
+                {
+                    new SimpleEmailService().SendEmail<CancellationMessageTemplate>(Settings.EmailForCancellation,
                                                                 "send_cancellation_order",
                                                                 "en",
                                                                 new CancellationMessageTemplate()
@@ -47,7 +49,12 @@
                                                                     Phone = customer.phone,
                                                                     Email = customer.mail
                                                                 });
-                                                                */
+                }
+                catch (Exception ex)
+                {
+                    Console.Write(ex);
+                }
+
                 BookingProvider.ChangeClaimStatus(claim.claimId.Value, Settings.AnnulateRequestStatusId, claim.status.id);
                 return base.Json(new { ok = true });
             }
