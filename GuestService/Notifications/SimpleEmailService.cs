@@ -82,6 +82,21 @@ namespace GuestService.Notifications
             m.IsBodyHtml = true;
             m.BodyEncoding = new System.Text.UTF8Encoding();
 
+            //add cc and bcc
+
+            try {
+                if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["smtp_cc"]))
+                    m.CC.Add(new MailAddress(ConfigurationManager.AppSettings["smtp_cc"]));
+            }
+            catch (Exception) { }
+
+            try
+            {
+                if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["smtp_bcc"]))
+                    m.Bcc.Add(new MailAddress(ConfigurationManager.AppSettings["smtp_bcc"]));
+            }
+            catch (Exception) { }
+
             return m;
         }
     }
