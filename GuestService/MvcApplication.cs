@@ -36,6 +36,15 @@
             }
             return base.GetVaryByCustomString(context, custom);
         }
+
+        void Session_Start(object sender, EventArgs e)
+        {
+        }
+
+        void Session_End(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 

@@ -9,6 +9,7 @@
     using GuestService.Resources;
     using Sm.System.Exceptions;
     using Sm.System.Mvc.Language;
+    using Sm.System.Database;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
@@ -21,10 +22,87 @@
     using System.Web;
     using System.Web.Caching;
     using System.Web.Http;
+       
 
     [HttpUrlLanguage]
     public class ExcursionController : ApiController
     {
+        private Dictionary<string, decimal> _courses = new Dictionary<string, decimal>();
+
+        private ExcursionPrice ConvertPrice(ExcursionPrice inp, string targetCurrency)
+        {
+
+            //ключ для кэша курсов
+            string key = inp.price.currency + "to" + targetCurrency;
+
+            //если курса нет в кэше, ищем в базе
+            if (!_courses.ContainsKey(key))
+                _courses[key] = GetCourse(inp.price.currency, targetCurrency);
+
+            //если ключ найден и он реальный, конвертируем
+            if (_courses[key] > 0)
+            {
+                inp.price.adult *= _courses[key];
+                inp.price.child *= _courses[key];
+                inp.price.service *= _courses[key];
+                inp.price.infant *= _courses[key];
+                inp.price.currency = targetCurrency;
+            }
+
+            return inp;
+        }
+
+
+        private PriceSummary ConvertPrice(PriceSummary inp, string targetCurrency) {
+
+            //ключ для кэша курсов
+            string key = inp.currency + "to" + targetCurrency;
+
+            //если курса нет в кэше, ищем в базе
+            if (!_courses.ContainsKey(key))
+                _courses[key] = GetCourse(inp.currency, targetCurrency); 
+
+            //если ключ найден и он реальный, конвертируем
+            if (_courses[key] > 0)
+            {
+                inp.price *= _courses[key];
+                inp.currency = targetCurrency;
+            }
+
+            return inp;
+        }
+
+        private decimal GetCourse(string from, string to) {
+
+            var query = "select top 1 * from currate "+
+                        "where base = (select inc from currency where alias = @to) " +
+                            " and currency = (select inc from currency where alias = @from) and tdate >= getdate() ";
+
+            var res = DatabaseOperationProvider.Query(query, "courses", new { from = from, to = to });
+
+            //если курс найден, отдаем его
+            if (res.Tables[0].Rows.Count > 0)
+            {
+                return Convert.ToDecimal(res.Tables[0].Rows[0]["rate"]);
+            }
+
+            //если нет, отправляем отрицательное значение
+            return -1;
+        }
+        private void TryGetCoursesFromCache() {
+
+            var tmp = HttpContext.Current.Cache["current_courses"] as Dictionary<string, decimal>;
+
+            if (tmp != null)
+                _courses = tmp;
+        }
+
+        private void TryPutCoursesToCache()
+        {
+            if(HttpContext.Current.Cache["current_courses"] == null)
+                HttpContext.Current.Cache.Add("current_courses", _courses, null, DateTime.Now.AddMinutes(30.0), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+        }
+
         [ActionName("catalog"), HttpGet]
         public CatalogResult Catalog([FromUri] CatalogParam param)
         {
@@ -54,6 +132,8 @@
                 from m in result.excursions
                 select m.excursion.id).ToList<int>(), param.Language);
 
+            TryGetCoursesFromCache();
+
             foreach (CatalogExcursionMinPrice excursion in result.excursions)
             {
                 ExcursionRank rank = null;
@@ -61,7 +141,11 @@
                 {
                     excursion.ranking = CatalogExcursionRanking.Create(rank, param.Language);
                 }
+
+                if (param.RateCode != excursion.minPrice.currency)
+                    excursion.minPrice = ConvertPrice(excursion.minPrice, param.RateCode);
             }
+            TryPutCoursesToCache();
 
             //вынести отдельно индивидуальные и групповые
             //если в фильтре нет категорий кроме 3 и 4, то можем брать кол-во из результатов поиска
@@ -74,8 +158,7 @@
                         cats.Add(cat);
                     else
                         indGroup.Add(cat);
-
-
+            
             if (cats.Count == 0)
                 result.categorygroups = ExcursionProvider.BuildFilterCategories(result.excursions, null);
             else //если есть, то ищем по фильтру 4 и 3
@@ -486,6 +569,7 @@
         [ActionName("price"), HttpGet]
         public ExcursionPriceList Price(int id, [FromUri] PriceParam param)
         {
+            
             if (param == null)
             {
                 throw new System.ArgumentNullException("param");
@@ -500,6 +584,7 @@
                 param.sp = new int?(CatalogProvider.GetGeoPointIdByAlias(param.StartPointAlias));
             }
             ExcursionPriceList result;
+
             if (param.Date.Value.Date < System.DateTime.Today)
             {
                 result = new ExcursionPriceList(new System.Collections.Generic.List<ExcursionPrice>());
@@ -507,11 +592,17 @@
             else
             {
                 System.Collections.Generic.List<ExcursionPrice> prices = ExcursionProvider.GetPrice(param.Language, partner.id, id, param.Date.Value, param.StartPoint);
+
+                if(prices.Count> 0)
+                    TryGetCoursesFromCache();
+
                 result = new ExcursionPriceList((
                     from m in prices
                     where !m.issaleclosed && !m.isstopsale && m.price != null && !(m.totalseats >= 0 && !m.freeseats.HasValue)
-                    select m).ToList<ExcursionPrice>());
+                    select ConvertPrice(m, param.RateCode)).ToList<ExcursionPrice>());
             }
+
+            
 
             return result;
         }

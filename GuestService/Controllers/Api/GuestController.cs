@@ -31,6 +31,8 @@
             }
             return GuestProvider.GetDepartureInfo(param.Language, param.FirstDate.Value, param.LastDate.Value, param.Hotel, param.Claim);
         }
+
+       
     }
 }
 

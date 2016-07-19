@@ -59,6 +59,16 @@
             }
         }
 
+        public string rate { get; set; }
+
+        public string RateCode
+        {
+            get
+            {
+                return this.rate;
+            }
+        }
+
         public string StartPointAlias
         {
             get

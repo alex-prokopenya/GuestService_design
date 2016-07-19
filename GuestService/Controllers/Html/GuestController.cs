@@ -24,6 +24,16 @@
     [UrlLanguage, Authorize, HttpPreferences, WebSecurityInitializer]
     public class GuestController : BaseController
     {
+        [AllowAnonymous, HttpGet, ActionName("setcurrency")]
+        public string SetCurrency(string code)
+        {
+            // Request.Content.cu
+
+            System.Web.HttpContext.Current.Session["currency"] = code;
+
+            return "ok";
+        }
+
         [AllowAnonymous, ActionName("brief"), HttpGet]
         public ActionResult Brief(GuestWebParams param)
         {

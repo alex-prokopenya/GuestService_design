@@ -146,6 +146,16 @@
             }
         }
 
+        public string rate { get; set; }
+
+        public string RateCode
+        {
+            get
+            {
+                return this.rate;
+            }
+        }
+
         public int? sp { get; set; }
 
         public string spa { get; set; }
