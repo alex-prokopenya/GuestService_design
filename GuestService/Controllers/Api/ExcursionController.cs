@@ -48,10 +48,8 @@
                 inp.price.infant *= _courses[key];
                 inp.price.currency = targetCurrency;
             }
-
             return inp;
         }
-
 
         private PriceSummary ConvertPrice(PriceSummary inp, string targetCurrency) {
 
@@ -76,7 +74,7 @@
 
             var query = "select top 1 * from currate "+
                         "where base = (select inc from currency where alias = @to) " +
-                            " and currency = (select inc from currency where alias = @from) and tdate >= getdate() ";
+                            " and currency = (select inc from currency where alias = @from) and tdate <= getdate() order by tdate desc ";
 
             var res = DatabaseOperationProvider.Query(query, "courses", new { from = from, to = to });
 

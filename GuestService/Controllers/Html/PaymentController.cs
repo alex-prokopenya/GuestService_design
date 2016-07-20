@@ -163,10 +163,12 @@
         private static Dictionary<string, string> PayPal_CreateConfig()
         {
             PaymentPaypalSettings paymentPaypal = Settings.PaymentPaypal;
+
             if (paymentPaypal == null)
             {
                 throw new Exception("PayPal settings are not configured");
             }
+
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
             dictionary.Add("mode", paymentPaypal.IsSandbox ? "sandbox" : "live");
             dictionary.Add("account1.apiUsername", paymentPaypal.Username);
@@ -687,7 +689,6 @@
         }
 
         #endregion
-
 
         #region JCC
         private ActionResult Processing_JCC(int claim, PaymentMode payment)

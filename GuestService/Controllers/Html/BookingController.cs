@@ -217,7 +217,9 @@
                 }
             }
             BookingContext model = new BookingContext();
+
             model.PaymentModes = BookingProvider.GetPaymentModes(UrlLanguage.CurrentLanguage, 2025654180);
+
             BookingClaim bookingClaim = new BookingClaim {
                 orders = new List<BookingOrder>()
             };
@@ -326,6 +328,7 @@
                 }
             }
             ReservationState reservation = controller.Calculate(bookingCartParam, bookingClaim);
+
             model.Prepare(form, reservation);
             model.PaymentModes = ApplyPaymentComissions(model.PaymentModes, model.Reservation.price);
 
