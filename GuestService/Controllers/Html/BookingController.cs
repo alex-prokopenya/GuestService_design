@@ -184,7 +184,7 @@
         }
 
         [HttpPost, ValidateAntiForgeryToken, ActionName("index")]
-        public ActionResult Index([Bind(Prefix="Form")] BookingModel form)
+        public ActionResult Index([Bind(Prefix = "Form")] BookingModel form)
         {
             Predicate<BookingOrderModel> match = null;
             Predicate<BookingOrder> predicate2 = null;
@@ -334,11 +334,33 @@
 
             for (int i = 0; i < bookingClaim.orders.Count; i++)
             {
-                if ((bookingClaim.orders[i].excursion.pickuptime!= null) && (bookingClaim.orders[i].excursion.pickuptime.Length > 5))
-                    model.Reservation.orders[i].excursion.pickuptime =  Convert.ToDateTime(bookingClaim.orders[i].excursion.pickuptime).ToString("HH:mm");
+                if ((bookingClaim.orders[i].excursion.pickuptime != null) && (bookingClaim.orders[i].excursion.pickuptime.Length > 5))
+                    model.Reservation.orders[i].excursion.pickuptime = Convert.ToDateTime(bookingClaim.orders[i].excursion.pickuptime).ToString("HH:mm");
                 else
                     model.Reservation.orders[i].excursion.pickuptime = bookingClaim.orders[i].excursion.pickuptime;
             }
+
+            var targetCurr = "EUR";
+
+            if (Session["currency"] != null)
+                targetCurr = Session["currency"].ToString();
+
+            if (targetCurr != model.Reservation.price.currency)
+            {
+                var excontrol = new GuestService.Controllers.Api.ExcursionController();
+
+                model.Reservation.price = excontrol.ConvertPrice(model.Reservation.price, targetCurr);
+
+
+                for (int i = 0; i < model.Reservation.orders.Count; i++)
+                {
+                    model.Reservation.orders[i].price = excontrol.ConvertPrice(model.Reservation.orders[i].price, targetCurr);
+                    model.Form.Orders[i].ReservationOrder.price = excontrol.ConvertPrice(model.Form.Orders[i].ReservationOrder.price, targetCurr);
+                }
+            }
+
+           // model.PaymentModes[0].comission.total
+           // model.PaymentModes[0].payrest.total
 
             return base.View(model);
         }

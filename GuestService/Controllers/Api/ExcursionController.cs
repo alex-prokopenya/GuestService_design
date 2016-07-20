@@ -29,9 +29,45 @@
     {
         private Dictionary<string, decimal> _courses = new Dictionary<string, decimal>();
 
+        public ReservationOrderPrice ConvertPrice(ReservationOrderPrice inp, string targetCurrency)
+        {
+            //ключ для кэша курсов
+            string key = inp.currency + "to" + targetCurrency;
+
+            //если курса нет в кэше, ищем в базе
+            if (!_courses.ContainsKey(key))
+                _courses[key] = GetCourse(inp.currency, targetCurrency);
+
+            //если ключ найден и он реальный, конвертируем
+            if (_courses[key] > 0)
+            {
+                inp.total *= _courses[key];
+                inp.currency = targetCurrency;
+            }
+            return inp;
+        }
+
+        public ReservationPrice ConvertPrice(ReservationPrice inp, string targetCurrency)
+        {
+            //ключ для кэша курсов
+            string key = inp.currency + "to" + targetCurrency;
+
+            //если курса нет в кэше, ищем в базе
+            if (!_courses.ContainsKey(key))
+                _courses[key] = GetCourse(inp.currency, targetCurrency);
+
+            //если ключ найден и он реальный, конвертируем
+            if (_courses[key] > 0)
+            {
+                inp.total *= _courses[key];
+                inp.topay *= _courses[key];
+                inp.currency = targetCurrency;
+            }
+            return inp;
+        }
+
         private ExcursionPrice ConvertPrice(ExcursionPrice inp, string targetCurrency)
         {
-
             //ключ для кэша курсов
             string key = inp.price.currency + "to" + targetCurrency;
 
@@ -87,6 +123,7 @@
             //если нет, отправляем отрицательное значение
             return -1;
         }
+
         private void TryGetCoursesFromCache() {
 
             var tmp = HttpContext.Current.Cache["current_courses"] as Dictionary<string, decimal>;
