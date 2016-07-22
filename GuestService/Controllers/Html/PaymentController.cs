@@ -139,6 +139,9 @@
                 }
             }
             #endregion
+            var paymentModes = BookingProvider.GetPaymentModes(UrlLanguage.CurrentLanguage, claim.Value);
+
+            paymentModes = BookingController.ApplyPaymentComissions(paymentModes, state.price);
 
             var targetCurr = "EUR";
 
@@ -160,10 +163,10 @@
             if (claim.HasValue)
             {
                 context.Reservation = state;
-                context.PaymentModes = BookingProvider.GetPaymentModes(UrlLanguage.CurrentLanguage, claim.Value);
+                context.PaymentModes = paymentModes;
             }
 
-            context.PaymentModes = BookingController.ApplyPaymentComissions(context.PaymentModes, context.Reservation.price);
+        //    context.PaymentModes = BookingController.ApplyPaymentComissions(context.PaymentModes, originalPrice);
 
             if (!string.IsNullOrEmpty( Request.Params["paymentMethod"] ))
             {

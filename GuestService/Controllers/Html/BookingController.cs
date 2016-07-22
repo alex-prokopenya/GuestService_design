@@ -367,6 +367,7 @@
 
         public static List<PaymentMode> ApplyPaymentComissions(List<PaymentMode> modes, ReservationPrice topay)
         {
+            var excontrol = new GuestService.Controllers.Api.ExcursionController();
 
             for (int i = 0; i < modes.Count; i++)
             {
@@ -375,6 +376,7 @@
                     var modeId = modes[i].id.Split('.')[0];
 
                     decimal comissionProcent = 0;
+                    var targetCurrency = modes[i].payrest.currency;
                     //если есть комиссия
                     if (ConfigurationManager.AppSettings.AllKeys.Contains("PaymentModeComission_" + modeId))
                     {
@@ -392,8 +394,13 @@
                         currency = topay.currency,
                         total = Math.Round(modes[i].comission.total + topay.total, 2)
                     };
+
+                    modes[i].comission = excontrol.ConvertPrice(modes[i].comission, targetCurrency);
+                    modes[i].payrest = excontrol.ConvertPrice(modes[i].payrest, targetCurrency);
                 }
-                catch (Exception) { }
+                catch (Exception ex) {
+                    Console.Write(ex.Message);
+                }
             }
 
             return modes;

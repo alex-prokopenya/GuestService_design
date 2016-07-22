@@ -42,6 +42,8 @@
             if (_courses[key] > 0)
             {
                 inp.total *= _courses[key];
+                inp.total = Math.Round(inp.total, 2);
+
                 inp.currency = targetCurrency;
             }
             return inp;
@@ -60,7 +62,9 @@
             if (_courses[key] > 0)
             {
                 inp.total *= _courses[key];
+                inp.total = Math.Round(inp.total, 2);
                 inp.topay *= _courses[key];
+                inp.topay = Math.Round(inp.topay, 2);
                 inp.currency = targetCurrency;
             }
             return inp;
@@ -79,9 +83,17 @@
             if (_courses[key] > 0)
             {
                 inp.price.adult *= _courses[key];
+                inp.price.adult = Math.Round(inp.price.adult, 2);
+
                 inp.price.child *= _courses[key];
+                inp.price.child = Math.Round(inp.price.child, 2);
+
                 inp.price.service *= _courses[key];
+                inp.price.service = Math.Round(inp.price.service, 2);
+
                 inp.price.infant *= _courses[key];
+                inp.price.infant = Math.Round(inp.price.infant, 2);
+
                 inp.price.currency = targetCurrency;
             }
             return inp;
@@ -100,6 +112,8 @@
             if (_courses[key] > 0)
             {
                 inp.price *= _courses[key];
+                inp.price = Math.Round(inp.price, 2);
+
                 inp.currency = targetCurrency;
             }
 
