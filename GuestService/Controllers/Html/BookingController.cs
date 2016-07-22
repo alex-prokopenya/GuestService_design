@@ -327,6 +327,7 @@
                     }
                 }
             }
+
             ReservationState reservation = controller.Calculate(bookingCartParam, bookingClaim);
 
             model.Prepare(form, reservation);
@@ -350,7 +351,6 @@
                 var excontrol = new GuestService.Controllers.Api.ExcursionController();
 
                 model.Reservation.price = excontrol.ConvertPrice(model.Reservation.price, targetCurr);
-
 
                 for (int i = 0; i < model.Reservation.orders.Count; i++)
                 {

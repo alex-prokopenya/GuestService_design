@@ -140,7 +140,23 @@
             }
             #endregion
 
+            var targetCurr = "EUR";
+
+            if (Session["currency"] != null)
+                targetCurr = Session["currency"].ToString();
+
+            if (targetCurr != state.price.currency)
+            {
+                var excontrol = new GuestService.Controllers.Api.ExcursionController();
+
+                state.price = excontrol.ConvertPrice(state.price, targetCurr);
+
+                for (int i = 0; i < state.orders.Count; i++)
+                    state.orders[i].price = excontrol.ConvertPrice(state.orders[i].price, targetCurr);
+            }
+            
             PaymentContext context = new PaymentContext();
+
             if (claim.HasValue)
             {
                 context.Reservation = state;
@@ -408,9 +424,6 @@
                 RedirectUrl = string.Format("https://www{0}.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token={1}", sandboxServer, base.Server.UrlEncode(setECResponse.Token))
             });
 
-          //  return new RedirectResult(string.Format("https://www{0}.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token={1}", sandboxServer, base.Server.UrlEncode(setECResponse.Token)));
-
-
         }
 
         private ActionResult Processing_Uniteller(int claim, PaymentMode payment)
@@ -626,9 +639,7 @@
             return base.View("_ProcessingResult", context);
         }
 
-
         #region PayU
-
         private ActionResult Processing_PayU(int claim, PaymentMode payment)
         {
             if (payment == null)
@@ -658,7 +669,9 @@
             {
                 throw new System.ArgumentNullException("model");
             }
+
             PaymentResultContext context = new PaymentResultContext();
+
             if (model.success == true)
             {
                 context.Success = true;
