@@ -166,8 +166,6 @@
                 context.PaymentModes = paymentModes;
             }
 
-        //    context.PaymentModes = BookingController.ApplyPaymentComissions(context.PaymentModes, originalPrice);
-
             if (!string.IsNullOrEmpty( Request.Params["paymentMethod"] ))
             {
                return ProcessingPrivate(new ProcessingModel() {

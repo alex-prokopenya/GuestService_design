@@ -601,7 +601,7 @@ namespace GuestService.Data
         public static ReservationState GetReservationState(string language, int claimId)
         {
             XElement xml = BookingProvider.BuildStatusClaimXml(claimId);
-            return BookingProvider.BuildBookingProcessResult(language, "status", xml, null);
+            return BookingProvider.BuildBookingProcessResult("", language, "status", xml, null);
         }
         public static ReservationState DoCalculation(string language, int partnerId, BookingClaim claim)
         {
@@ -612,7 +612,7 @@ namespace GuestService.Data
 
             XElement xml = BookingProvider.BuildBookingClaimXml(partnerId, claim);
 
-            var res = BookingProvider.BuildBookingProcessResult(language, "calc", xml, null);
+            var res = BookingProvider.BuildBookingProcessResult("", language, "calc", xml, null);
 
             List<string> errorsId = new List<string>();
 
@@ -709,7 +709,7 @@ namespace GuestService.Data
 
             if (calcRes.errors.Count > 0) return calcRes;
 
-            return BookingProvider.BuildBookingProcessResult(language, "save", xml, new int?(partnerPassId));
+            return BookingProvider.BuildBookingProcessResult(  claim.orders[0].excursion.curr ,language, "save", xml, new int?(partnerPassId));
         }
 
         private static string GetExcursionIncluded(int id, string lang)
@@ -851,7 +851,7 @@ namespace GuestService.Data
         }
 
 
-        private static ReservationState BuildBookingProcessResult(string language, string action, XElement xml, int? partnerPassId)
+        private static ReservationState BuildBookingProcessResult(string currency, string language, string action, XElement xml, int? partnerPassId)
         {
             try
             {
@@ -936,7 +936,7 @@ namespace GuestService.Data
                     try
                     {
                         //делаем привязку путевки к партнеру
-                        AddClaimForUser(result.claimId.Value, language);
+                        AddClaimForUser(result.claimId.Value, language, currency);
                     }
                     catch (Exception ex)
                     {
@@ -1091,8 +1091,8 @@ namespace GuestService.Data
             return dateFrom.AddMinutes(defStopSale);
         }
 
-        //добавить язык
-        private static void AddClaimForUser(int claimId, string lang)
+        //добавить язык и валюту
+        private static void AddClaimForUser(int claimId, string lang, string currency)
         {
             var dataset = DatabaseOperationProvider.Query("select user_id from guestservice_alias, claim where inc=@claimId and alias = note ", "users", new { claimId = claimId });
 
@@ -1101,7 +1101,7 @@ namespace GuestService.Data
             if (dataset.Tables["users"].Rows.Count > 0)
                 userId = dataset.Tables["users"].Rows[0].ReadInt("user_id");
 
-            DatabaseOperationProvider.Query("insert into guestservice_claim values(@userId, @claimId, @lang)", "customer", new { userId = userId, claimId = claimId, lang = lang });
+            DatabaseOperationProvider.Query("insert into guestservice_claim values(@userId, @claimId, @lang, @curr)", "customer", new { userId = userId, claimId = claimId, lang = lang, curr = currency });
         }
 
         //добавить язык

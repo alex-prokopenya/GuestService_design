@@ -27,6 +27,8 @@
 
         public string note { get; set; }
 
+        public string curr { get; set; }
+
         public BookingPax pax { get; set; }
 
         public int? pickuphotel { get; set; }
