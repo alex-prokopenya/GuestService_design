@@ -174,6 +174,8 @@
                });
             }
 
+            context.PaymentModes = BookingController.FilterModes(context.PaymentModes, targetCurr);
+
             return base.View(context);
         }
 

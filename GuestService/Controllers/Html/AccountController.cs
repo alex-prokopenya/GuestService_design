@@ -412,34 +412,7 @@
                                                              });
             }
 
-            /*
-            else if (action == ConfirmMailOperation.recovery)
-            {
-                string content = new Uri(base.Request.BaseServerAddress(), base.Url.Action("resetpassword", new { token = confirmationToken })).ToString();
-                UserToolsProvider.UmgRaiseMessage(UrlLanguage.CurrentLanguage, "Guest Service Registration", userName, "GS_REGCONFIRM", new XElement("guestServiceRegistration", new object[] { new XAttribute("action", action.ToString()), new XElement("confirmUrl", content), new XElement("email", userName) }).ToString());
-            }
-
-            if (string.IsNullOrEmpty(userName))
-            {
-                throw new ArgumentNullException("userName");
-            }
-            if (string.IsNullOrEmpty(confirmationToken))
-            {
-                throw new ArgumentNullException("confirmationToken");
-            }
-            string content = null;
-            switch (action)
-            {
-                case ConfirmMailOperation.confirm:
-                    content = new Uri(base.Request.BaseServerAddress(), base.Url.Action("confirm", new { email = userName, token = confirmationToken })).ToString();
-                    break;
-
-                case ConfirmMailOperation.recovery:
-                    content = new Uri(base.Request.BaseServerAddress(), base.Url.Action("resetpassword", new { token = confirmationToken })).ToString();
-                    break;
-            }
-            UserToolsProvider.UmgRaiseMessage(UrlLanguage.CurrentLanguage, "Guest Service Registration", userName, "GS_REGCONFIRM", new XElement("guestServiceRegistration", new object[] { new XAttribute("action", action.ToString()), new XElement("confirmUrl", content), new XElement("email", userName) }).ToString());
-            */
+          
         }
 
         private enum ConfirmMailOperation

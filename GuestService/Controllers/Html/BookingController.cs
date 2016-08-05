@@ -359,10 +359,39 @@
                 }
             }
 
-           // model.PaymentModes[0].comission.total
-           // model.PaymentModes[0].payrest.total
+            model.PaymentModes = FilterModes(model.PaymentModes, targetCurr);
 
             return base.View(model);
+        }
+
+        public static List<PaymentMode> FilterModes(List<PaymentMode> modes, string code)
+        {
+            var res = new List<PaymentMode>();
+
+            var typesInCur = new List<string>();
+
+            foreach (PaymentMode mode in modes)
+            {
+                if (mode.payrest.currency == code)
+                {
+                    typesInCur.Add(mode.id.Split('.')[0]);
+                }
+            }
+
+            foreach (PaymentMode mode in modes)
+            {
+                var id = mode.id.Split('.')[0];
+
+                if (typesInCur.Contains(id))
+                {
+                    if (mode.payrest.currency == code)
+                        res.Add(mode);
+                }
+                else
+                    res.Add(mode);
+            }
+
+            return res;
         }
 
         public static List<PaymentMode> ApplyPaymentComissions(List<PaymentMode> modes, ReservationPrice topay)

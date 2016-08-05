@@ -923,7 +923,6 @@ namespace GuestService.Data
                                                             order.excursion.time,
                                                             order.partner.id);
 
-
                             if (realOrderId > 0)
                                 order.excursion.pickuptime = GetExcursionPickupTime(realOrderId);
                         }
@@ -939,9 +938,7 @@ namespace GuestService.Data
                         AddClaimForUser(result.claimId.Value, language, currency);
                     }
                     catch (Exception ex)
-                    {
-
-                    }
+                    {}
 
                     try
                     {
@@ -952,9 +949,6 @@ namespace GuestService.Data
                     }
                     catch (Exception ex)
                     { }
-
-                    //pickuptime = GetExcursionPickupTime(result.id)
-                  
 
                     //делаем отбивку
                     Task[] tasks = new Task[]
@@ -1247,12 +1241,8 @@ namespace GuestService.Data
                         }
                     }
                 }
-            }
 
-            //отправка сообщений
-            {
                 var reservation = BookingProvider.GetReservationState(UrlLanguage.CurrentLanguage, claimId);
-
 
                 Task[] tasks = new Task[]
                                 {

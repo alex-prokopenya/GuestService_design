@@ -13,8 +13,6 @@ using WebMatrix.WebData;
 
 namespace GuestService.Controllers.Api
 {
-
-
     [HttpUrlLanguage, Authorize]
     public class BookingController : ApiController
     {
@@ -44,10 +42,12 @@ namespace GuestService.Controllers.Api
             {
                 throw new ArgumentNullException("param");
             }
+
             if (claim == null)
             {
                 throw new ArgumentNullException("claim");
             }
+
             WebPartner partner = UserToolsProvider.GetPartner(param);
 
             if (claim.customer != null)
