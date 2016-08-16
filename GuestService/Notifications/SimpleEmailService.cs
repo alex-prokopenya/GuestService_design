@@ -1,9 +1,9 @@
-﻿using System.Net.Mail;
-using System.Net;
-using System;
+﻿using System;
 using System.Configuration;
-using System.Net.Mime;
 using System.IO;
+using System.Net;
+using System.Net.Mail;
+using System.Net.Mime;
 using System.Web.Mvc;
 
 //УВЕДОМЛЕНИЯ ОТ САМО ГЕНЕРИРУЮТСЯ В ХРАНИМКЕ [dbo].[up_booking_notification_processor]
@@ -49,9 +49,8 @@ namespace GuestService.Notifications
 
         private MailMessage BuildMessage(string to, string subject, string content)
         {
-            Console.WriteLine(content);
-
             string htmlBody = content;
+
             AlternateView avHtml = AlternateView.CreateAlternateViewFromString
                 (htmlBody, new System.Text.UTF8Encoding(), MediaTypeNames.Text.Html);
 

@@ -9,7 +9,8 @@
     <AssemblyName>GuestService</AssemblyName>
     <OutputType>Library</OutputType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,8 +51,11 @@
     <Reference Include="DotNetOpenAuth.AspNet">
       <HintPath>..\..\..\..\..\..\Temp\guestservice-20150610\bin\DotNetOpenAuth.AspNet.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Http" />
+    <Reference Include="System.Net.Http">
+      <HintPath>..\..\..\Visual Studio 2015\WebSites\GuestserviceDesign\bin\System.Net.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Data" />
     <Reference Include="System" />
@@ -72,9 +76,6 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web.Optimization">
       <HintPath>..\..\..\Visual Studio 2015\WebSites\geustservice-partner\bin\System.Web.Optimization.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http">
-      <HintPath>..\..\Visual Studio 2015\WebSites\GuestserviceDesign\bin\System.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="Sm.System">

@@ -950,6 +950,8 @@ namespace GuestService.Data
                     catch (Exception ex)
                     { }
 
+                    //convert info
+                    result = ConvertToNewCurrency(result, currency);
                     //делаем отбивку
                     Task[] tasks = new Task[]
                     {
@@ -967,6 +969,7 @@ namespace GuestService.Data
             }
             return null;
         }
+
         private static int GetRealOrderId(int claimId, DateTime dateFrom, int excursionId, PickupPlace pointFrom, ExcursionReservationTime extime, int partnerId) {
             try
             {
@@ -1098,7 +1101,18 @@ namespace GuestService.Data
             DatabaseOperationProvider.Query("insert into guestservice_claim values(@userId, @claimId, @lang, @curr)", "customer", new { userId = userId, claimId = claimId, lang = lang, curr = currency });
         }
 
-        //добавить язык
+        private static string GetCurrency(int claimId)
+        {
+            var res = DatabaseOperationProvider.Query("select isnull(a.currency,'EUR') from guestservice_claim as a where a.claim = @claimId", "customer", new { claimId = claimId });
+
+            if (res.Tables["customer"].Rows.Count > 0)
+                return res.Tables["customer"].Rows[0][0].ToString();
+            else
+                return "EUR";      
+        }
+
+
+
         private static ReservationCustomer GetCustomer(int claimId)
         {
             var res = DatabaseOperationProvider.Query("select a.name, a.email, a.phones, a.inc, a.address, b.language from physical_buyer as a, guestservice_claim as b where a.claim = @claimId and b.claim =  @claimId ", "customer", new { claimId = claimId });
@@ -1244,6 +1258,12 @@ namespace GuestService.Data
 
                 var reservation = BookingProvider.GetReservationState(UrlLanguage.CurrentLanguage, claimId);
 
+                //get reservation currency
+                var currency = GetCurrency(claimId);
+
+                //convert info
+                reservation = ConvertToNewCurrency(reservation, currency);
+
                 Task[] tasks = new Task[]
                                 {
                                     Task.Factory.StartNew(() => new SimpleEmailService().SendEmail<ReservationState>(reservation.customer.mail, "payment", reservation.customer.language, reservation)),
@@ -1254,6 +1274,24 @@ namespace GuestService.Data
             }
         }
 
+        private static ReservationState ConvertToNewCurrency(ReservationState model, string currency)
+        {
+            var targetCurr = currency;
+
+            if (targetCurr != model.price.currency)
+            {
+                var excontrol = new GuestService.Controllers.Api.ExcursionController();
+
+                model.price = excontrol.ConvertPrice(model.price, targetCurr);
+
+                for (int i = 0; i < model.orders.Count; i++)
+                {
+                    model.orders[i].price = excontrol.ConvertPrice(model.orders[i].price, targetCurr);
+                }
+            }
+
+            return model;
+        }
 
         public static void ChangeClaimStatus(int claimId, int newStatus, int oldStatus)
         {
