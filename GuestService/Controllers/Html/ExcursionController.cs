@@ -153,12 +153,9 @@
                     param.dt = DateTime.Today.AddDays(2);
             }
             else if (!String.IsNullOrEmpty(Request.QueryString["dt"]))
-            {
                 param.dt = Convert.ToDateTime(Request.QueryString["dt"]);
-            }
             else//по умолчанию берем цены на послезавтра
                 param.dt = DateTime.Today.AddDays(2);
-
 
             var seoObject = Data.SeoObjectProvider.GetSeoObject(id.Value, "excursion", UrlLanguage.CurrentLanguage);
             model.Description = seoObject.Description;
@@ -173,6 +170,8 @@
                   date = param.Date
             };
             model.NavigateState.Options = options2;
+
+            //model.NavigateState.Options.excursion
 
             return base.View(model);
         }

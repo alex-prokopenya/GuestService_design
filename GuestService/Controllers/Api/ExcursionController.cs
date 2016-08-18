@@ -170,6 +170,13 @@
             }
             ExcursionProvider.ExcursionSorting sorting = (!string.IsNullOrEmpty(param.SortOrder)) ? ((ExcursionProvider.ExcursionSorting)System.Enum.Parse(typeof(ExcursionProvider.ExcursionSorting), param.SortOrder)) : ExcursionProvider.ExcursionSorting.name;
 
+            if (param.ex.HasValue)
+            {
+                //get excursion country regions
+                //set as param 
+               param.dp = Html.CountriesController.GetExcursionCountryRegions(param.ex.Value);
+            }
+
             //получить id экскурсий в регионе
             //фильтровать по id
             CatalogResult result = new CatalogResult();
@@ -219,6 +226,9 @@
 
                 result.categorygroups = ExcursionProvider.BuildFilterCategories(excursions, null);
             }
+
+            if(sorting == ExcursionProvider.ExcursionSorting.price)
+                result.excursions.Sort((obj1, obj2) => obj1.minPrice.price.CompareTo(obj2.minPrice.price));
 
             return result;
         }
@@ -513,6 +523,7 @@
                 }
                 list.Add(item);
             }
+            
             return list;
         }
 

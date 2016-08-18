@@ -19,7 +19,7 @@
         //по слагу определяем страну
         public static int? GetCountryBySlug(string slug)
         {
-            var selectQuery = "select name, lname, inc from state where inc in (select state from region where inc in (select region from excurs))";
+            var selectQuery = "select name, lname, inc from state where inc in (select state from region where inc in (select region from excurs where reserv = 1))";
 
             //текущий язык
             DataSet set = DatabaseOperationProvider.Query(selectQuery, "regions", new { });
@@ -40,7 +40,7 @@
         //по слагу определяем регион
         public static int? GetRegionBySlug(string slug)
         {
-            var selectQuery = "select name, lname, inc from region where inc in (select region from excurs)";
+            var selectQuery = "select name, lname, inc from region where inc in (select region from excurs where reserv = 1)";
 
             //текущий язык
             DataSet set = DatabaseOperationProvider.Query(selectQuery, "regions", new { });
@@ -61,7 +61,7 @@
         //список стран, в которых есть экскурсии
         private KeyValuePair<string, string>[] GetCountriesList()
         {
-            var selectQuery = "select name, lname, inc from state where inc in (select state from region where inc in (select region from excurs))";
+            var selectQuery = "select name, lname, inc from state where inc in (select state from region where inc in (select region from excurs where reserv = 1))";
 
             //текущий язык
             DataSet set = DatabaseOperationProvider.Query(selectQuery, "regions", new { });
@@ -86,7 +86,7 @@
         //список регионов, по стране
         private KeyValuePair<string, string>[] GetCountryRegions(int countryID)
         {
-                var selectQuery = "select name, lname, inc from region where inc in (select region from excurs) AND state = "  + countryID;
+                var selectQuery = "select name, lname, inc from region where inc in (select region from excurs where reserv = 1) AND state = " + countryID;
                 //текущий язык
                 DataSet set = DatabaseOperationProvider.Query(selectQuery, "regions", new { });
 
@@ -103,6 +103,26 @@
                 }
 
                 return regions.ToArray();
+        }
+
+        //список регионов, по стране
+        public static int[] GetExcursionCountryRegions(int exc)
+        {
+            var selectQuery = "select name, lname, inc "+
+                              "from region as a "+
+                              "where inc in (select region from excurs where reserv = 1)  " +
+                              "AND a.state in (select state from region where inc in (select region from exprice where excurs = "+exc+"))";
+            //текущий язык
+            DataSet set = DatabaseOperationProvider.Query(selectQuery, "regions", new { });
+
+            var regions = new List<int>();
+
+            foreach (DataRow row in set.Tables["regions"].Rows)
+            {
+                regions.Add(Convert.ToInt32(row["inc"]));
+            }
+
+            return regions.ToArray();
         }
 
         //список стран
