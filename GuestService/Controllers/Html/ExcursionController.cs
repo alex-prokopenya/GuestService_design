@@ -176,6 +176,13 @@
             return base.View(model);
         }
 
+        private int GetCountryByName(string slug)
+        {
+            var countryId = CountriesController.GetCountryBySlug(slug);
+
+            return countryId.HasValue ? countryId.Value : 0;
+        }
+
         private int GetDepartByName(string slug)
         {
             var regionId = CountriesController.GetRegionBySlug(slug);
@@ -206,18 +213,58 @@
             {
                 var regionId = GetDepartByName(param.region);
 
-                if (regionId == 0) return RedirectPermanent("/error/404");
+                if (regionId == 0)
+                {
+                    //пробуем получить id страны
+                    var countryId = GetCountryByName(param.region);
 
-                param.sc = "search";
-                param.d = new int[] { GetDepartByName(param.region) };
-                param.s = "";
+                    if (countryId > 0)
+                    {
+                        param.sc = "search";
+                        param.d = CountriesController.GetCountryRegions(countryId, true);
+                        param.s = "";
 
-                var seoObject = SeoObjectProvider.GetSeoObject(regionId, "region", UrlLanguage.CurrentLanguage);
-                
-                model.Title = seoObject.Title;
-                model.SeoText = seoObject.SeoText;
-                model.Keywords = seoObject.Keywords;
-                model.Description = seoObject.Description;
+                        var seoObject = SeoObjectProvider.GetSeoObject(countryId, "country", UrlLanguage.CurrentLanguage);
+
+                        model.Title = seoObject.Title;
+                        model.SeoText = seoObject.SeoText;
+                        model.Keywords = seoObject.Keywords;
+                        model.Description = seoObject.Description;
+                    }
+                    else
+                    {
+                        var partnerId = Html.PartnersController.GetPartnerByAlias(param.region);
+
+                        if (partnerId > 0)
+                        {
+                            param.sc = "search";
+                            param.s = "";
+                            param.pr = partnerId;
+
+                            var seoObject = SeoObjectProvider.GetSeoObject(partnerId, "partner", UrlLanguage.CurrentLanguage);
+
+                            model.Title = seoObject.Title;
+                            model.SeoText = seoObject.SeoText;
+                            model.Keywords = seoObject.Keywords;
+                            model.Description = seoObject.Description;
+                        }
+                        else
+                            return RedirectPermanent("/error/404");
+                    }
+                }
+                else
+                { 
+                    param.sc = "search";
+                    param.d = new int[] { GetDepartByName(param.region) };
+                    param.s = "";
+
+                    var seoObject = SeoObjectProvider.GetSeoObject(regionId, "region", UrlLanguage.CurrentLanguage);
+
+                    model.Title = seoObject.Title;
+                    model.SeoText = seoObject.SeoText;
+                    model.Keywords = seoObject.Keywords;
+                    model.Description = seoObject.Description;
+                }
             }
 
             if (param.ShowCommand != null)
@@ -225,7 +272,7 @@
                 model.NavigateState = new ExcursionIndexNavigateCommand();
                 if (param.ShowCommand.ToLower() == "search")
                 {
-                    if ((((param.SearchText != null) || (param.Categories != null)) || (param.Destinations != null)) || (param.ExcursionLanguages != null))
+                    if ((((param.pr != null) || (param.SearchText != null) || (param.Categories != null)) || (param.Destinations != null)) || (param.ExcursionLanguages != null))
                     {
                         model.NavigateState.Cmd = "search";
                         ExcursionIndexNavigateOptions options = new ExcursionIndexNavigateOptions {
@@ -233,7 +280,8 @@
                             categories = param.Categories,
                             destinations = param.Destinations,
                             departures = param.Destinations,
-                            languages = param.ExcursionLanguages
+                            languages = param.ExcursionLanguages,
+                            provider = param.pr
                         };
                         model.NavigateState.Options = options;
                     }

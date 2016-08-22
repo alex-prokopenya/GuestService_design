@@ -590,9 +590,9 @@ namespace GuestService.Data
                 {
                     try
                     {
-                        var query = "select inc from excurs where region = " + departures[0] +
-                             " union select excurs as inc from exdetplan where region = " + departures[0] +
-                             " union select excurs as inc from exprice   where region = " + departures[0] + " or region < 0";
+                        var query = "select inc from excurs where region in (" + string.Join(",",departures) + ")" +
+                             " union select excurs as inc from exdetplan where region  in (" + string.Join(",", departures) + ")" +
+                             " union select excurs as inc from exprice   where region  in (" + string.Join(",", departures) + ")  or region < 0";
 
                         //делаем фильтр экскурсий по id региона
                         DataSet set = DatabaseOperationProvider.Query(query, "regions", new { });

@@ -24,6 +24,34 @@ namespace GuestService.Controllers.Html
             Agent //отели и агентства
         }
 
+        public static int GetPartnerByAlias(string alias)
+        {
+            var selectQuery = "select inc from partner where alias = @alias";
+
+            DataSet set = DatabaseOperationProvider.Query(selectQuery, "partners", new { alias = alias});
+
+            if (set.Tables["partners"].Rows.Count > 0)
+                return Convert.ToInt32( set.Tables["partners"].Rows[0][0] );
+
+            return -10;
+        }
+
+        public static List<int> GetPartnerExcursions(int partner)
+        {
+            var res = new List<int>();
+
+            var selectQuery = "select inc from excurs where partner = @partner";
+
+            DataSet set = DatabaseOperationProvider.Query(selectQuery, "partners", new { partner = partner });
+
+            foreach (DataRow row in set.Tables["partners"].Rows)
+            {
+                res.Add(Convert.ToInt32(row[0]));
+            }
+
+            return res;
+        }
+
         //список партнеров, по стране
         public KeyValuePair<string, string>[] GetCountryPartners(int countryID, PartnerType type)
         {
@@ -62,7 +90,6 @@ namespace GuestService.Controllers.Html
         //список партнеров 
         public KeyValuePair<string, string>[] GetPartnersSearch(string searchText)
         {
-
             var selectQuery = String.Format(@"select p.inc, p.name, p.lname, s.name as 'sname', s.lname as 'slname'  
                                             from guestservice_UserProfile as us 
                                                 inner join partner as p on us.partnerId = p.inc or us.providerId = p.inc

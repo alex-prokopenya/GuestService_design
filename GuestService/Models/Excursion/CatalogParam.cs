@@ -136,6 +136,8 @@
 
         public int? ex { get; set; }
 
+        public int? pr { get; set; }
+
         public int? sl { get; set; }
 
         public string so { get; set; }

@@ -123,6 +123,8 @@
         }
 
         public string visualtheme { get; set; }
+
+        public int? pr { get; set; }
     }
 }
 

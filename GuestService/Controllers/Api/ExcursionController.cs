@@ -180,10 +180,22 @@
             //получить id экскурсий в регионе
             //фильтровать по id
             CatalogResult result = new CatalogResult();
+
             result.excursions = ExcursionProvider.FindExcursions(param.Language, partner.id, param.FirstDate, param.LastDate, param.SearchLimit, param.StartPoint, param.SearchText, param.Categories, param.Departures, (param.Destinations != null && param.Destinations.Length > 0) ? param.Destinations : (param.DestinationState.HasValue ? new int[]
             {
                 param.DestinationState.Value
             } : null), param.ExcursionLanguages, param.MinDuration, param.MaxDuration, new ExcursionProvider.ExcursionSorting?(sorting), param.WithoutPrice);
+
+            var allowed = new List<int>();
+
+            if ((param.pr.HasValue) && (param.pr.Value > 0))
+            {
+                //получить экскурсии партнера
+                allowed = Html.PartnersController.GetPartnerExcursions(param.pr.Value);
+                //отфильтровать экскурсии
+                result.excursions = FilterExcursions(result.excursions, allowed);
+            }
+
             System.Collections.Generic.Dictionary<int, ExcursionRank> rankings = SurveyProvider.GetExcursionsRanking((
                 from m in result.excursions
                 select m.excursion.id).ToList<int>(), param.Language);
@@ -224,13 +236,29 @@
                     param.DestinationState.Value
                 } : null), param.ExcursionLanguages, param.MinDuration, param.MaxDuration, new ExcursionProvider.ExcursionSorting?(sorting), param.WithoutPrice);
 
+                if (param.pr.HasValue)
+                {
+                    excursions = FilterExcursions(excursions, allowed);
+                }
+
                 result.categorygroups = ExcursionProvider.BuildFilterCategories(excursions, null);
             }
 
             if(sorting == ExcursionProvider.ExcursionSorting.price)
                 result.excursions.Sort((obj1, obj2) => obj1.minPrice.price.CompareTo(obj2.minPrice.price));
-
+            
             return result;
+        }
+
+        private List<CatalogExcursionMinPrice> FilterExcursions(List<CatalogExcursionMinPrice> excursions, List<int> allowed)
+        {
+            var res = new List<CatalogExcursionMinPrice>();
+
+            foreach (CatalogExcursionMinPrice item in excursions)
+                if (allowed.Contains(item.excursion.id))
+                    res.Add(item);
+
+            return res;
         }
 
         [HttpGet, ActionName("catalogimage")]
@@ -250,6 +278,7 @@
             bool? showDefault = param.ShowDefault;
             args[5] = showDefault.HasValue ? ((object) showDefault.GetValueOrDefault()) : ((object) 1);
             string key = string.Format("catalogImage[id:{0}][w:{1}][h:{2}][i:{3}][m:{4}][d:{5}]", args);
+
             ImageCacheItem item = HttpContext.Current.Cache[key] as ImageCacheItem;
             if ((item == null) || Settings.IsCacheDisabled)
             {

@@ -20,6 +20,8 @@
         public string sortorder { get; set; }
 
         public string text { get; set; }
+
+        public int? provider { get; set; }
     }
 }
 

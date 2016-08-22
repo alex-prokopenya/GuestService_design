@@ -84,7 +84,25 @@
         }
 
         //список регионов, по стране
-        private KeyValuePair<string, string>[] GetCountryRegions(int countryID)
+        public static int[] GetCountryRegions(int countryID, bool onlyIds)
+        {
+            var keys = new List<int>();
+
+            var selectQuery = "select name, lname, inc from region where inc in (select region from excurs where reserv = 1) AND state = " + countryID;
+            //текущий язык
+            DataSet set = DatabaseOperationProvider.Query(selectQuery, "regions", new { });
+
+           
+            foreach (DataRow row in set.Tables["regions"].Rows)
+            {
+                keys.Add(Convert.ToInt32(row["inc"]));
+            }
+
+            return keys.ToArray();
+        }
+
+        //список регионов, по стране
+        public KeyValuePair<string, string>[] GetCountryRegions(int countryID)
         {
                 var selectQuery = "select name, lname, inc from region where inc in (select region from excurs where reserv = 1) AND state = " + countryID;
                 //текущий язык
