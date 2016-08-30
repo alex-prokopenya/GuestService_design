@@ -11,7 +11,6 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using Sm.System.Mvc.Language;
 using GuestService.Notifications;
 
 
@@ -59,6 +58,38 @@ namespace GuestService.Data
 
             if (!row.IsNull("partner_user_id"))
                 defaultContent.UserId = row.ReadInt("partner_user_id");
+        }
+
+        public static int GetPartnerUserId()
+        {
+            try
+            {
+                var domain = "excursions.ru-kipr.ru";
+
+                domain = HttpContext.Current.Request.Url.Host;
+                //current page
+                //current language
+
+                var query = "   SELECT partner_user_id " +
+
+                            "   FROM guestservice_partner_links " +
+
+                            "   WHERE partner_domain = @domain";
+
+
+
+                var res = DatabaseOperationProvider.Query(query, "content", new { domain = domain});
+
+                if (res.Tables["content"].Rows.Count > 0)
+                    return Convert.ToInt32(res.Tables["content"].Rows[0]["partner_user_id"]);
+                
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+
         }
 
         public static PartnerContent GetPartnerContent(string lang)

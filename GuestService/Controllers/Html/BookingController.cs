@@ -139,6 +139,8 @@
                 context.Form = new BookingModel();
                 context.Form.PartnerAlias = cart.PartnerAlias;
                 context.Form.PartnerSessionID = cart.PartnerSessionID;
+                context.Form.WhiteLabelId = PartnerContentProvider.GetPartnerUserId();
+
                 if (WebSecurity.IsAuthenticated)
                 {
                     context.Form.CustomerEmail = WebSecurity.CurrentUserName;
@@ -239,7 +241,8 @@
             BookingCartParam bookingCartParam = new BookingCartParam {
                 ln = UrlLanguage.CurrentLanguage,
                 pa = form.PartnerAlias,
-                psid = form.PartnerSessionID
+                psid = form.PartnerSessionID,
+                wl = PartnerContentProvider.GetPartnerUserId()
             };
             GuestService.Controllers.Api.BookingController controller = new GuestService.Controllers.Api.BookingController();
             bookingClaim.note = form.BookingNote;
@@ -360,6 +363,7 @@
             }
 
             model.PaymentModes = FilterModes(model.PaymentModes, targetCurr);
+            model.Form.WhiteLabelId = PartnerContentProvider.GetPartnerUserId();
 
             return base.View(model);
         }

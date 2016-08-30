@@ -2,7 +2,7 @@
 {
     using System;
     using System.Runtime.CompilerServices;
-
+    using System.Collections.Generic;
     public class ExcursionIndexContext: SeoObject
     {
         public DateTime ExcursionDate { get; set; }
@@ -17,6 +17,8 @@
 
         public string StartPointAlias { get; set; }
         
+        public KeyValuePair<string, string>[] Countries { get; set; }
+
     }
 }
 

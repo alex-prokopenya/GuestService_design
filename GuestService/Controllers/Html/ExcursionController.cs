@@ -171,8 +171,6 @@
             };
             model.NavigateState.Options = options2;
 
-            //model.NavigateState.Options.excursion
-
             return base.View(model);
         }
 
@@ -205,6 +203,7 @@
                 if (string.IsNullOrEmpty(model.PartnerAlias))
                     throw new ArgumentException("partner alias is not specified");
             }
+
             model.StartPointAlias = param.StartPointAlias;
             model.ExcursionDate = DateTime.Today.Date.AddDays((double) Settings.ExcursionDefaultDate);
             model.ExternalCartId = param.ExternalCartId;
@@ -306,7 +305,7 @@
                 };
                 model.NavigateState.Options = options2;
             }
-
+            model.Countries = CountriesController.GetCountriesList();
             return base.View(model);
         }
     }

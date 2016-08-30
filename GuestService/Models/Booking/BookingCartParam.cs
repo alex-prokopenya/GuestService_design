@@ -26,6 +26,8 @@
         }
 
         public string psid { get; set; }
+
+        public int wl { get; set; }
     }
 }
 

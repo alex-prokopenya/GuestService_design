@@ -10,7 +10,7 @@ using System.Xml.Linq;
 using System.Threading.Tasks;
 using Sm.System.Mvc.Language;
 using GuestService.Notifications;
-
+using System.Web;
 namespace GuestService.Data
 {
     public static class BookingProvider
@@ -601,7 +601,7 @@ namespace GuestService.Data
         public static ReservationState GetReservationState(string language, int claimId)
         {
             XElement xml = BookingProvider.BuildStatusClaimXml(claimId);
-            return BookingProvider.BuildBookingProcessResult("", language, "status", xml, null);
+            return BookingProvider.BuildBookingProcessResult("", language, "status", xml, null, null);
         }
         public static ReservationState DoCalculation(string language, int partnerId, BookingClaim claim)
         {
@@ -612,7 +612,7 @@ namespace GuestService.Data
 
             XElement xml = BookingProvider.BuildBookingClaimXml(partnerId, claim);
 
-            var res = BookingProvider.BuildBookingProcessResult("", language, "calc", xml, null);
+            var res = BookingProvider.BuildBookingProcessResult("", language, "calc", xml, null, null);
 
             List<string> errorsId = new List<string>();
 
@@ -694,7 +694,7 @@ namespace GuestService.Data
             return cnt;
         }
 
-        public static ReservationState DoBooking(string language, int partnerId, int partnerPassId, BookingClaim claim)
+        public static ReservationState DoBooking(string language, int partnerId, int partnerPassId, BookingClaim claim, int wl)
         {
             
             //перед бронированием проверить наличие мест
@@ -709,7 +709,7 @@ namespace GuestService.Data
 
             if (calcRes.errors.Count > 0) return calcRes;
 
-            return BookingProvider.BuildBookingProcessResult(  claim.orders[0].excursion.curr ,language, "save", xml, new int?(partnerPassId));
+            return BookingProvider.BuildBookingProcessResult(  claim.orders[0].excursion.curr ,language, "save", xml, new int?(partnerPassId), new int?(wl));
         }
 
         private static string GetExcursionIncluded(int id, string lang)
@@ -851,8 +851,10 @@ namespace GuestService.Data
         }
 
 
-        private static ReservationState BuildBookingProcessResult(string currency, string language, string action, XElement xml, int? partnerPassId)
+        private static ReservationState BuildBookingProcessResult(string currency, string language, string action, XElement xml, int? partnerPassId, int? wl)
         {
+            //var temp = HttpContext.Current.Request.Url;
+
             try
             {
                 DataSet ds = DatabaseOperationProvider.QueryProcedure("up_guest_BookingProcess", "state,orders,people,errors", new
@@ -867,7 +869,6 @@ namespace GuestService.Data
                     from DataRow row in ds.Tables["state"].Rows
                     select BookingProvider.factory.ReservationState(row)).FirstOrDefault<ReservationState>();
 
-               
                 var orderNote = "";
 
                 try
@@ -882,6 +883,7 @@ namespace GuestService.Data
                         from DataRow row in ds.Tables["orders"].Rows
                         orderby BookingProvider.factory.ReservationOrderSorting(row)
                         select BookingProvider.factory.ReservationOrder(row, language, result.claimId, orderNote)).ToList<ReservationOrder>();
+
                     foreach (ReservationOrder order in result.orders)
                     {
                         if (order.freight != null)
@@ -892,9 +894,11 @@ namespace GuestService.Data
                                 date = order.datefrom,
                                 language = language
                             });
+
                             BookingProvider.factory.FillFreightInfo(order.freight, freightds.Tables["freight"].Rows.Cast<DataRow>().FirstOrDefault<DataRow>());
                         }
                     }
+
                     result.people = (
                         from DataRow row in ds.Tables["people"].Rows
                         select BookingProvider.factory.ReservationPeople(row)).ToList<ReservationPeople>();
@@ -935,7 +939,7 @@ namespace GuestService.Data
                     try
                     {
                         //делаем привязку путевки к партнеру
-                        AddClaimForUser(result.claimId.Value, language, currency);
+                        AddClaimForUser(result.claimId.Value, language, currency, wl);
                     }
                     catch (Exception ex)
                     {}
@@ -1089,14 +1093,26 @@ namespace GuestService.Data
         }
 
         //добавить язык и валюту
-        private static void AddClaimForUser(int claimId, string lang, string currency)
+        private static void AddClaimForUser(int claimId, string lang, string currency, int? wl)
         {
-            var dataset = DatabaseOperationProvider.Query("select user_id from guestservice_alias, claim where inc=@claimId and alias = note ", "users", new { claimId = claimId });
-
             int userId = 39;
 
-            if (dataset.Tables["users"].Rows.Count > 0)
-                userId = dataset.Tables["users"].Rows[0].ReadInt("user_id");
+            if (!wl.HasValue)
+            {
+                var dataset = DatabaseOperationProvider.Query("select user_id from guestservice_alias, claim where inc=@claimId and alias = note ", "users", new { claimId = claimId });
+
+                if (dataset.Tables["users"].Rows.Count > 0)
+                    userId = dataset.Tables["users"].Rows[0].ReadInt("user_id");
+                else
+                {
+                    var content = PartnerContentProvider.GetPartnerContent("en");
+
+                    if (content.PartnerId > 0)
+                        userId = content.PartnerId;
+                }
+            }
+            else
+                userId = wl.Value;
 
             DatabaseOperationProvider.Query("insert into guestservice_claim values(@userId, @claimId, @lang, @curr)", "customer", new { userId = userId, claimId = claimId, lang = lang, curr = currency });
         }
@@ -1110,8 +1126,6 @@ namespace GuestService.Data
             else
                 return "EUR";      
         }
-
-
 
         private static ReservationCustomer GetCustomer(int claimId)
         {

@@ -155,6 +155,10 @@
         [ActionName("catalog"), HttpGet]
         public CatalogResult Catalog([FromUri] CatalogParam param)
         {
+
+            var tmp = HttpContext.Current.Request.Url;
+
+
             if (param == null)
             {
                 throw new System.ArgumentNullException("param");
@@ -168,7 +172,7 @@
             {
                 param.sp = new int?(CatalogProvider.GetGeoPointIdByAlias(param.StartPointAlias));
             }
-            ExcursionProvider.ExcursionSorting sorting = (!string.IsNullOrEmpty(param.SortOrder)) ? ((ExcursionProvider.ExcursionSorting)System.Enum.Parse(typeof(ExcursionProvider.ExcursionSorting), param.SortOrder)) : ExcursionProvider.ExcursionSorting.name;
+            ExcursionProvider.ExcursionSorting sorting = (!string.IsNullOrEmpty(param.SortOrder)) ? ((ExcursionProvider.ExcursionSorting)System.Enum.Parse(typeof(ExcursionProvider.ExcursionSorting), param.SortOrder)) : ExcursionProvider.ExcursionSorting.price;
 
             if (param.ex.HasValue)
             {

@@ -48,6 +48,9 @@
         public string PaymentMethod { get; set; }
 
         public bool RulesAccepted { get; set; }
+
+
+        public int WhiteLabelId { get; set; }
     }
 }
 
