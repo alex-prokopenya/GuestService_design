@@ -71,7 +71,8 @@ namespace GuestService.Controllers.Api
                     }
                 }
             }
-            return BookingProvider.DoBooking(param.Language, partner.id, partner.passId, claim);
+
+            return BookingProvider.DoBooking(param.Language, partner.id, partner.passId, claim, param.wl);
         }
 
         [HttpPost, ActionName("calculate"), AllowAnonymous]

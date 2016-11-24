@@ -255,7 +255,6 @@
             {
                 try
                 {
-                 
                     string confirmationToken = WebSecurity.GeneratePasswordResetToken(model.UserName, 0x5a0);
                     this.SendRegistrationConfirmMail(ConfirmMailOperation.recovery, model.UserName, confirmationToken);
                     return base.RedirectToAction("recoverysuccess", new { returnUrl = returnUrl });

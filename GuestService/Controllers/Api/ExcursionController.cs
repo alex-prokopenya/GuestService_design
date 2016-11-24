@@ -155,9 +155,7 @@
         [ActionName("catalog"), HttpGet]
         public CatalogResult Catalog([FromUri] CatalogParam param)
         {
-
             var tmp = HttpContext.Current.Request.Url;
-
 
             if (param == null)
             {
@@ -230,22 +228,69 @@
                         cats.Add(cat);
                     else
                         indGroup.Add(cat);
-            
-            if (cats.Count == 0)
-                result.categorygroups = ExcursionProvider.BuildFilterCategories(result.excursions, null);
-            else //если есть, то ищем по фильтру 4 и 3
+
+            if ((cats.Count == 0) && (indGroup.Count == 0))
             {
-                var excursions = ExcursionProvider.FindExcursions(param.Language, partner.id, param.FirstDate, param.LastDate, param.SearchLimit, param.StartPoint, param.SearchText, indGroup.ToArray(), param.Departures, (param.Destinations != null && param.Destinations.Length > 0) ? param.Destinations : (param.DestinationState.HasValue ? new int[]
+                result.categorygroups = ExcursionProvider.BuildFilterCategories(result.excursions, null);
+            }
+            else
+            {
+                //Ищем экскурсии без учета фильтра по категории
+                var excursionsFree = ExcursionProvider.FindExcursions(param.Language, partner.id, param.FirstDate, param.LastDate, param.SearchLimit, param.StartPoint, param.SearchText, null, param.Departures, (param.Destinations != null && param.Destinations.Length > 0) ? param.Destinations : (param.DestinationState.HasValue ? new int[]
                 {
                     param.DestinationState.Value
                 } : null), param.ExcursionLanguages, param.MinDuration, param.MaxDuration, new ExcursionProvider.ExcursionSorting?(sorting), param.WithoutPrice);
 
-                if (param.pr.HasValue)
+                //фильтруем по поставщику
+                if (allowed.Count > 0)
                 {
-                    excursions = FilterExcursions(excursions, allowed);
+                    excursionsFree = FilterExcursions(excursionsFree, allowed);
+                }
+                
+                //берем количество по категориям
+                List<CatalogFilterCategoryGroup> catGroups = null;
+                List<CatalogFilterCategoryGroup> indGroups = null;
+
+                if (cats.Count * indGroup.Count  > 0)
+                {
+                    catGroups = ExcursionProvider.BuildFilterCategories(excursionsFree, null);
+                    indGroups = ExcursionProvider.BuildFilterCategories(excursionsFree, null);
+                }
+                else if (cats.Count > 0)
+                {
+                    catGroups = ExcursionProvider.BuildFilterCategories(excursionsFree, null);
+                    indGroups = ExcursionProvider.BuildFilterCategories(result.excursions, null);
+                }
+                else
+                {
+                    indGroups = ExcursionProvider.BuildFilterCategories(excursionsFree, null);
+                    catGroups = ExcursionProvider.BuildFilterCategories(result.excursions, null);
                 }
 
-                result.categorygroups = ExcursionProvider.BuildFilterCategories(excursions, null);
+                var groups = new List<CatalogFilterItem>();
+
+                if(indGroups.Count > 0)
+                    foreach (CatalogFilterItem item in indGroups[0].items)
+                    {
+                        if ((item.id == 3) || (item.id == 4))
+                            groups.Add(item);
+                    }
+
+                if (catGroups.Count > 0)
+                    foreach (CatalogFilterItem item in catGroups[0].items)
+                    {
+                        if ((item.id != 3) && (item.id != 4))
+                            groups.Add(item);
+                    }
+
+                var groupsFilter = new List<CatalogFilterCategoryGroup>();
+
+                groupsFilter.Add(new CatalogFilterCategoryGroup() {
+                    items = groups,
+                    name = ""
+                });
+
+                result.categorygroups = groupsFilter;
             }
 
             if(sorting == ExcursionProvider.ExcursionSorting.price)
@@ -538,6 +583,16 @@
                     item.excursiondates = ExcursionProvider.GetDates(partner.id, description.excursion.id, param.FirstDate.Value, param.LastDate.Value);
                     item.ranking = CatalogDescriptionExcursionRanking.Create(SurveyProvider.GetExcursionRanking(description.excursion.id, param.Language), param.Language);
                     item.surveynotes = ExcursionSurveyNote.Create(SurveyProvider.GetExcursionNotes(description.excursion.id));
+
+                    item.cities  = ExcursionProvider.GetExcursionCities (description.excursion.id, param.Language);
+
+                    item.destinationCity = ExcursionProvider.GetDestinationCity(description.excursion.id, param.Language);
+
+                    if(item.destinationCity != null)
+                        item.destinationCountry = ExcursionProvider.GetRegionCountry(item.destinationCity.id, param.Language);
+
+                    if (item.cities.Count > 0)
+                        item.country = ExcursionProvider.GetRegionCountry(item.cities[0].id, param.Language);
                 }
 
                 int maxCheckCount = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["max_dates_check_places"]);
@@ -627,7 +682,6 @@
                 result = new FilterDetailsResult();
                 System.Collections.Generic.List<CatalogExcursionMinPrice> excursions = ExcursionProvider.FindExcursions(param.Language, partner.id, null, null, null, param.StartPoint, null, null, null, null, null, null, null, null, param.WithoutPrice);
                 result.categorygroups = ExcursionProvider.BuildFilterCategories(excursions, null);
-             //   result.departures = ExcursionProvider.BuildFilterDepartures(excursions, null);
                 result.languages = ExcursionProvider.BuildFilterLanguages(excursions, null);
                 result.durations = ExcursionProvider.BuildFilterDurations(excursions);
                 System.Collections.Generic.List<CatalogFilterLocationItem> destinations = ExcursionProvider.BuildFilterDestinations(excursions, null);

@@ -22,6 +22,18 @@
             base.description = item.description;
         }
 
+        [XmlArray("DestinationCountry")]
+        public GeoPlace destinationCountry { get; set; }
+
+        [XmlArray("DestinationCity")]
+        public GeoPlace destinationCity { get; set; }
+
+        [XmlArray("Country")]
+        public GeoPlace country { get; set; }
+
+        [XmlArray("Cities")]
+        public List<GeoPlace> cities { get; set; }
+
         [XmlArray("CategoryGroups")]
         public List<CatalogFilterCategoryGroup> categorygroups { get; set; }
 

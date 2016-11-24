@@ -115,11 +115,14 @@
     <Compile Include="GuestService\Controllers\Html\FeedbackFormController.cs" />
     <Compile Include="GuestService\Controllers\Html\InfoController.cs" />
     <Compile Include="GuestService\Controllers\Html\PartnersController.cs" />
+    <Compile Include="GuestService\CountryRegionRoute.cs" />
+    <Compile Include="GuestService\Data\GeoPlace.cs" />
     <Compile Include="GuestService\Data\GuideProvider.cs" />
     <Compile Include="GuestService\Data\PartnerContent.cs" />
     <Compile Include="GuestService\Data\PartnerContentProvider.cs" />
     <Compile Include="GuestService\Data\ReservationCustomer.cs" />
     <Compile Include="GuestService\Data\SeoObjectProvider.cs" />
+    <Compile Include="GuestService\Helpers\Logger.cs" />
     <Compile Include="GuestService\Models\AccountConfirmationTemplate.cs" />
     <Compile Include="GuestService\Models\CancellationMessageTemplate.cs" />
     <Compile Include="GuestService\Models\Countries\CountriesCatalog.cs" />

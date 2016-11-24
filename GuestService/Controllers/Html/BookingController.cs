@@ -349,20 +349,24 @@
             if (Session["currency"] != null)
                 targetCurr = Session["currency"].ToString();
 
-            if (targetCurr != model.Reservation.price.currency)
+            if (model.Reservation.price != null)
             {
-                var excontrol = new GuestService.Controllers.Api.ExcursionController();
-
-                model.Reservation.price = excontrol.ConvertPrice(model.Reservation.price, targetCurr);
-
-                for (int i = 0; i < model.Reservation.orders.Count; i++)
+                if (targetCurr != model.Reservation.price.currency)
                 {
-                    model.Reservation.orders[i].price = excontrol.ConvertPrice(model.Reservation.orders[i].price, targetCurr);
-                    model.Form.Orders[i].ReservationOrder.price = excontrol.ConvertPrice(model.Form.Orders[i].ReservationOrder.price, targetCurr);
+                    var excontrol = new GuestService.Controllers.Api.ExcursionController();
+
+                    model.Reservation.price = excontrol.ConvertPrice(model.Reservation.price, targetCurr);
+
+                    for (int i = 0; i < model.Reservation.orders.Count; i++)
+                    {
+                        model.Reservation.orders[i].price = excontrol.ConvertPrice(model.Reservation.orders[i].price, targetCurr);
+                        model.Form.Orders[i].ReservationOrder.price = excontrol.ConvertPrice(model.Form.Orders[i].ReservationOrder.price, targetCurr);
+                    }
                 }
+
+                model.PaymentModes = FilterModes(model.PaymentModes, targetCurr);
             }
 
-            model.PaymentModes = FilterModes(model.PaymentModes, targetCurr);
             model.Form.WhiteLabelId = PartnerContentProvider.GetPartnerUserId();
 
             return base.View(model);

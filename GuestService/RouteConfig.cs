@@ -3,11 +3,13 @@
     using System;
     using System.Web.Mvc;
     using System.Web.Routing;
-
+    
     public class RouteConfig
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
+            var countries = Controllers.Html.CountriesController.GetCountriesList();
+
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             #region string url = "error/{code}";
@@ -22,6 +24,51 @@
             routes.MapRoute(name, url, defaults);
             #endregion
 
+            #region url = "{language}/{region}";
+
+            name = "excursions_in_country";
+            url = "{language}/{region}";
+            defaults = new
+            {
+                controller = "excursion",
+                action = "index",
+                region = UrlParameter.Optional
+            };
+
+            routes.MapRoute(name, url, defaults, new { region =  new CountryRegionRoute()});
+
+            #endregion
+
+            #region url = "{language}/{country}/{region}";
+
+            name = "excursions_in_city";
+            url = "{language}/{country}/{region}";
+            defaults = new
+            {
+                controller = "excursion",
+                action = "index",
+                region = UrlParameter.Optional
+            };
+
+            routes.MapRoute(name, url, defaults, new { country = new CountryRegionRoute()});
+
+            #endregion
+
+            #region url = "{language}/{country}/{region}/exc/{id}";
+
+            name = "excursion_details_in_city";
+            url = "{language}/{country}/{region}/exc/{id}";
+            defaults = new
+            {
+                controller = "excursion",
+                action = "details",
+                region = UrlParameter.Optional
+            };
+
+            routes.MapRoute(name, url, defaults, new { country = new CountryRegionRoute() });
+
+            #endregion
+
             #region  url = "{language}/countries/{country}";
 
             name = "countries";
@@ -33,6 +80,25 @@
                 country = UrlParameter.Optional
             };
             routes.MapRoute(name, url, defaults);
+
+            #endregion
+
+
+            #region  url = "{language}/partner/{country}";
+
+            name = "partner";
+            url = "{language}/partner/{region}";
+            defaults = new
+            {
+                controller = "excursion",
+                action = "index",
+                country = UrlParameter.Optional
+            };
+
+            routes.MapRoute(name, url, defaults, new
+            {
+                language = @"\w\w(\-\w\w)?"
+            });
 
             #endregion
 
@@ -124,7 +190,6 @@
 
             #endregion
 
-
             #region url = "";
 
             name = "language2";
@@ -151,9 +216,7 @@
                 id = UrlParameter.Optional
             };
             routes.MapRoute(name, url, defaults);
-
             #endregion
-
 
         }
     }

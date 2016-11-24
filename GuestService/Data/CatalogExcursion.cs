@@ -9,6 +9,12 @@
 
     public class CatalogExcursion
     {
+        [XmlArray("Country")]
+        public GeoPlace country { get; set; }
+
+        [XmlArray("Cities")]
+        public List<GeoPlace> cities { get; set; }
+
         [XmlArray("Categories")]
         public List<ExcursionCategory> categories { get; set; }
 

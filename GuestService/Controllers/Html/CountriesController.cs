@@ -59,7 +59,7 @@
         }
 
         //список стран, в которых есть экскурсии
-        private KeyValuePair<string, string>[] GetCountriesList()
+        public static KeyValuePair<string, string>[] GetCountriesList()
         {
             var selectQuery = "select name, lname, inc from state where inc in (select state from region where inc in (select region from excurs where reserv = 1))";
 

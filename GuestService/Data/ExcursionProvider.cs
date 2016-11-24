@@ -720,6 +720,7 @@ namespace GuestService.Data
                 from DataRow row in ds.Tables["dates"].Rows
                 select ExcursionProvider.factory.ExcursionDate(row)).ToList<ExcursionDate>();
         }
+
         public static System.Collections.Generic.List<ExcursionDescription> GetDescription(string lang, int[] excursions)
         {
             if (excursions == null)
@@ -797,9 +798,79 @@ namespace GuestService.Data
                         }
                     }
                 }
+
                 return description;
             }).ToList<ExcursionDescription>();
         }
+
+        public static GeoPlace GetRegionCountry(int regionId, string lang)
+        {
+            var query = "select inc, name, lname from state where inc = (select state from region where inc = " + regionId + ") and inc > 0";
+
+            DataSet set = DatabaseOperationProvider.Query(query, "regions", new { });
+
+            if (set.Tables["regions"].Rows.Count > 0)
+            {
+                var row = set.Tables["regions"].Rows[0];
+                return new GeoPlace()
+                {
+                    id = row.ReadInt("inc"),
+                    name = lang == "ru" ? row.ReadString("name") : row.ReadString("lname"),
+                    state = GuestService.Code.StringsHelper.GenerateSlug(row.ReadString("lname")),
+                };
+            }
+            else
+                return null;
+        }
+
+        public static GeoPlace GetDestinationCity(int excId, string lang)
+        {
+            var places = new List<GeoPlace>();
+
+            var subquery = "( select region from excurs where inc =  " + excId + " )";
+
+            var query = "select inc, name, lname from region where inc in (" + subquery + ") and inc > 0";
+
+            //делаем фильтр экскурсий по id региона
+            DataSet set = DatabaseOperationProvider.Query(query, "regions", new { });
+
+            if (set.Tables["regions"].Rows.Count > 0)
+            {
+                var row = set.Tables["regions"].Rows[0];
+                return new GeoPlace()
+                {
+                    id = row.ReadInt("inc"),
+                    name = lang == "ru" ? row.ReadString("name") : row.ReadString("lname"),
+                    state = GuestService.Code.StringsHelper.GenerateSlug(row.ReadString("lname")),
+                };
+            }
+            else
+                return null;
+        }
+
+        public static List<GeoPlace> GetExcursionCities(int excId, string lang)
+        {
+            var places = new List<GeoPlace>();
+
+            var subquery = "(      select region from exdetplan where excurs = " + excId +
+                           " union select region from exprice where excurs = " + excId + ")";
+
+
+            var query = "select inc, name, lname from region where inc in ("+ subquery + ") and inc > 0";
+
+            //делаем фильтр экскурсий по id региона
+            DataSet set = DatabaseOperationProvider.Query(query, "regions", new { });
+
+            foreach (DataRow row in set.Tables["regions"].Rows)
+                places.Add(new GeoPlace() {
+                   id = row.ReadInt("inc"),
+                   name = lang == "ru"? row.ReadString("name"): row.ReadString("lname"),
+                   state =GuestService.Code.StringsHelper.GenerateSlug(row.ReadString("lname")),
+                });
+
+            return places;
+        }
+
         public static System.Collections.Generic.List<CatalogFilterCategoryGroup> BuildFilterCategories(System.Collections.Generic.List<CatalogExcursionMinPrice> catalog, int[] marks)
         {
             ExcursionProvider.CatalogFilterItemsCounterBuilder<ExcursionCategory> builder = new ExcursionProvider.CatalogFilterItemsCounterBuilder<ExcursionCategory>();
@@ -837,6 +908,7 @@ namespace GuestService.Data
                 orderby (m.name == null) ? 0 : 1, m.name
                 select m).ToList<CatalogFilterCategoryGroup>();
         }
+
         public static System.Collections.Generic.List<CatalogFilterLocationItem> BuildFilterDepartures(System.Collections.Generic.List<CatalogExcursionMinPrice> catalog, int[] marks)
         {
             ExcursionProvider.CatalogFilterItemsCounterBuilder<GeoArea> builder = new ExcursionProvider.CatalogFilterItemsCounterBuilder<GeoArea>();
@@ -937,6 +1009,7 @@ namespace GuestService.Data
                 select m).ToList<GeoArea>();
 
         }
+
         public static System.Collections.Generic.List<CatalogFilterLocationItem> BuildFilterDestinations(System.Collections.Generic.List<CatalogExcursionMinPrice> catalog, int[] marks)
         {
             ExcursionProvider.CatalogFilterItemsCounterBuilder<GeoArea> builder = new ExcursionProvider.CatalogFilterItemsCounterBuilder<GeoArea>();
@@ -965,6 +1038,7 @@ namespace GuestService.Data
                 orderby m.name
                 select m).ToList<CatalogFilterLocationItem>();
         }
+
         public static System.Collections.Generic.List<CatalogFilterItem> BuildFilterLanguages(System.Collections.Generic.List<CatalogExcursionMinPrice> catalog, int[] marks)
         {
             ExcursionProvider.CatalogFilterItemsCounterBuilder<Language> builder = new ExcursionProvider.CatalogFilterItemsCounterBuilder<Language>();
@@ -992,6 +1066,7 @@ namespace GuestService.Data
                 orderby m.name
                 select m).ToList<CatalogFilterItem>();
         }
+
         public static CatalogFilterDuration BuildFilterDurations(System.Collections.Generic.List<CatalogExcursionMinPrice> catalog)
         {
             System.TimeSpan? min = null;
@@ -1019,6 +1094,7 @@ namespace GuestService.Data
                 max = max.Value
             } : null;
         }
+
         public static ExcursionProvider.LoadStatesResult LoadStatesForPoints(string lang, int[] points)
         {
             if (points == null)
@@ -1043,6 +1119,7 @@ namespace GuestService.Data
                 select ExcursionProvider.factory.StatePoint(row)).ToList<GeoArea>();
             return result;
         }
+
         public static System.Collections.Generic.List<CatalogFilterCategoryGroup> BuildDescriptionCategories(CatalogExcursion catalog)
         {
             ExcursionProvider.CatalogFilterItemsCounterBuilder<ExcursionCategory> builder = new ExcursionProvider.CatalogFilterItemsCounterBuilder<ExcursionCategory>();
@@ -1074,6 +1151,7 @@ namespace GuestService.Data
                 orderby (m.name == null) ? 0 : 1, m.name
                 select m).ToList<CatalogFilterCategoryGroup>();
         }
+
         public static System.Collections.Generic.List<ExcursionPickupHotel> GetExcursionPickupHotels(string lang, int excursion, int? excursionTime, int[] departurePoints)
         {
             string depaturepoints = (departurePoints != null && departurePoints.Length > 0) ? string.Join<int>(",", departurePoints) : null;

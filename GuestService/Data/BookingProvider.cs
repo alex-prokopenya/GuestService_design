@@ -942,7 +942,9 @@ namespace GuestService.Data
                         AddClaimForUser(result.claimId.Value, language, currency, wl);
                     }
                     catch (Exception ex)
-                    {}
+                    {
+                        GuestService.Helpers.Logger.WriteToErrorLog(ex.Message+ " " + ex.StackTrace);
+                    }
 
                     try
                     {
@@ -952,7 +954,9 @@ namespace GuestService.Data
                         result.timelimit = timelimit;
                     }
                     catch (Exception ex)
-                    { }
+                    {
+                        GuestService.Helpers.Logger.WriteToErrorLog(ex.Message + " " + ex.StackTrace);
+                    }
 
                     //convert info
                     result = ConvertToNewCurrency(result, currency);
