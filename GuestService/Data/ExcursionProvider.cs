@@ -742,6 +742,8 @@ namespace GuestService.Data
             return ds.Tables["excursions"].Rows.Cast<DataRow>().Select(delegate (DataRow row)
             {
                 ExcursionDescription description = new ExcursionDescription();
+
+                //description.excursion.cities[0].name
                 description.excursion = ExcursionProvider.factory.CatalogExcursion(row);
                 description.pictures = (
                     from p in pictures

@@ -576,6 +576,7 @@
 
             foreach (ExcursionDescription description in list2)
             {
+                
                 ExcursionExtendedDescription item = new ExcursionExtendedDescription(description);
                 if ((description != null) && (description.excursion != null))
                 {
@@ -609,6 +610,7 @@
                             ed.isstopsale = true;
                     }
                 }
+                
                 list.Add(item);
             }
             
