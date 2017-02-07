@@ -818,16 +818,38 @@ namespace GuestService.Data
                 {
                     id = row.ReadInt("inc"),
                     name = lang == "ru" ? row.ReadString("name") : row.ReadString("lname"),
-                    state = GuestService.Code.StringsHelper.GenerateSlug(row.ReadString("lname")),
+                    state = Code.StringsHelper.GenerateSlug(row.ReadString("lname")),
                 };
             }
             else
                 return null;
         }
 
+        public static GeoPlace GetRegionById(int regionId, string lang)
+        {
+
+            var query = "select inc, name, lname from region where inc in (" + regionId + ") and inc > 0";
+
+            //делаем фильтр экскурсий по id региона
+            DataSet set = DatabaseOperationProvider.Query(query, "regions", new { });
+
+            if (set.Tables["regions"].Rows.Count > 0)
+            {
+                var row = set.Tables["regions"].Rows[0];
+                return new GeoPlace()
+                {
+                    id = row.ReadInt("inc"),
+                    name = lang == "ru" ? row.ReadString("name") : row.ReadString("lname"),
+                    state = Code.StringsHelper.GenerateSlug(row.ReadString("lname")),
+                };
+            }
+            else
+                return null;
+        }
+
+
         public static GeoPlace GetDestinationCity(int excId, string lang)
         {
-            var places = new List<GeoPlace>();
 
             var subquery = "( select region from excurs where inc =  " + excId + " )";
 
@@ -843,7 +865,7 @@ namespace GuestService.Data
                 {
                     id = row.ReadInt("inc"),
                     name = lang == "ru" ? row.ReadString("name") : row.ReadString("lname"),
-                    state = GuestService.Code.StringsHelper.GenerateSlug(row.ReadString("lname")),
+                    state = Code.StringsHelper.GenerateSlug(row.ReadString("lname")),
                 };
             }
             else
@@ -867,7 +889,7 @@ namespace GuestService.Data
                 places.Add(new GeoPlace() {
                    id = row.ReadInt("inc"),
                    name = lang == "ru"? row.ReadString("name"): row.ReadString("lname"),
-                   state =GuestService.Code.StringsHelper.GenerateSlug(row.ReadString("lname")),
+                   state = Code.StringsHelper.GenerateSlug(row.ReadString("lname")),
                 });
 
             return places;

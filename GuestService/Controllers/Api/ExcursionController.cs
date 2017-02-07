@@ -341,6 +341,7 @@
                     ImageFormatter formatter = new ImageFormatter(catalogImage, Pictures.nophoto) {
                         Format = (catalogImage != null) ? ImageFormat.Jpeg : ImageFormat.Png
                     };
+
                     param.ApplyFormat(formatter);
                     Stream stream = formatter.CreateStream();
                     if (stream != null)

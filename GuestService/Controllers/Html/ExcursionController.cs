@@ -13,6 +13,7 @@
     using System.Collections.Generic;
     using System.Web.Mvc;
     using Newtonsoft.Json;
+    using System.Linq;
 
     [UrlLanguage, HttpPreferences, WebSecurityInitializer]
     public class ExcursionController : BaseController
@@ -117,13 +118,28 @@
         [AllowAnonymous, HttpGet, ActionName("details")]
         public ActionResult Details(ExcursionIndexWebParam param, int? id)
         {
+            var city = ExcursionProvider.GetDestinationCity(id.Value, "en");
+
+            if((city!=null) && ((param.region == null) || (StringsHelper.GenerateSlug(city.name) != param.region)))
+            {
+                    var country = ExcursionProvider.GetRegionCountry(city.id, "en");
+
+                    if (country != null)
+                    {
+                        Response.RedirectPermanent("/" + UrlLanguage.CurrentLanguage + "/" + StringsHelper.GenerateSlug(country.name) + "/" + StringsHelper.GenerateSlug(city.name) + "/exc/" + id + "/" + Request.Url.Query, true);
+                        return base.View();
+                    }
+            } 
+
             if ((param != null) && (param.visualtheme != null))
             {
                 new VisualThemeManager(this).SafeSetThemeName(param.visualtheme);
             }
+
             ExcursionIndexContext model = new ExcursionIndexContext();
             PartnerSessionManager.CheckPartnerSession(this, param);
             model.PartnerSessionId = param.PartnerSessionID;
+
             if (model.PartnerSessionId == null)
             {
                 model.PartnerAlias = (param.PartnerAlias != null) ? param.PartnerAlias : Settings.ExcursionDefaultPartnerAlias;
@@ -158,6 +174,7 @@
                 param.dt = DateTime.Today.AddDays(2);
 
             var seoObject = Data.SeoObjectProvider.GetSeoObject(id.Value, "excursion", UrlLanguage.CurrentLanguage);
+
             model.Description = seoObject.Description;
             model.Keywords = seoObject.Keywords;
             model.Title = seoObject.Title;
@@ -169,6 +186,7 @@
                   excursion = param.Excursion,
                   date = param.Date
             };
+
             model.NavigateState.Options = options2;
 
             return base.View(model);
@@ -190,6 +208,7 @@
 
         public ActionResult Index(ExcursionIndexWebParam param)
         {
+            
             if ((param != null) && (param.visualtheme != null))
                 new VisualThemeManager(this).SafeSetThemeName(param.visualtheme);
 
@@ -223,6 +242,14 @@
                         param.d = CountriesController.GetCountryRegions(countryId, true);
                         param.s = "";
 
+                        var country = ExcursionProvider.GetRegionCountry(param.d[0], "en");
+
+                        if ((country != null) && (Request.Url.Segments.Contains("excursion/")))
+                        {
+                            Response.RedirectPermanent("/" + UrlLanguage.CurrentLanguage + "/" + StringsHelper.GenerateSlug(country.name) + "/" + Request.Url.Query, true);
+                            return base.View();
+                        }
+
                         var seoObject = SeoObjectProvider.GetSeoObject(countryId, "country", UrlLanguage.CurrentLanguage);
 
                         model.Title = seoObject.Title;
@@ -252,7 +279,16 @@
                     }
                 }
                 else
-                { 
+                {
+                    var city = ExcursionProvider.GetRegionById(regionId, "en");
+                    var country = ExcursionProvider.GetRegionCountry(regionId, "en");
+
+                    if ((country != null) && (Request.Url.Segments.Contains("excursion/")))
+                    {
+                        Response.RedirectPermanent("/" + UrlLanguage.CurrentLanguage + "/" + StringsHelper.GenerateSlug(country.name) + "/" + StringsHelper.GenerateSlug(param.region) + "/" + Request.Url.Query, true);
+                        return base.View();
+                    }
+
                     param.sc = "search";
                     param.d = new int[] { GetDepartByName(param.region) };
                     param.s = "";
